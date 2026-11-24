@@ -1,0 +1,1707 @@
+/*
+|--------------------------------------------------------------------------
+| Gaya halaman publik JNET
+|--------------------------------------------------------------------------
+| Nilai warna, font, dan ukuran berasal dari tema.css.
+*/
+
+/* ---------- Dasar ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--tinggi-kepala) + 16px); }
+
+body {
+    margin: 0;
+    background: var(--warna-latar);
+    color: var(--warna-teks);
+    font-family: var(--font-utama);
+    font-size: var(--ukuran-dasar);
+    line-height: var(--tinggi-baris);
+    -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* Judul: h1 tetap tebal (800) sebagai judul halaman. Judul bagian h2 (misalnya "Pilihan paket")
+   20–26px dengan tebal 750: lebih pendek dari sebelumnya, sedikit lebih tebal dari 700 (font variabel).
+   text-wrap: balance membagi baris judul seimbang (tidak ada satu kata menggantung). */
+h1, h2, h3 { margin: 0; line-height: 1.2; color: var(--warna-gelap); letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-size: var(--ukuran-h1); font-weight: 800; }
+h2 { font-size: var(--ukuran-h2); font-weight: 750; letter-spacing: -0.01em; }
+h3 { font-size: var(--ukuran-h3); font-weight: 700; }
+p { margin: 0; }
+p + p { margin-top: 0.75em; }
+
+a { color: var(--warna-tautan); text-underline-offset: 3px; }
+a:hover { color: var(--warna-aksi-hover); }
+
+:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 2px; border-radius: 4px; }
+
+/* Teks khusus pembaca layar (juga dipakai di halaman publik) */
+.visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.lewati {
+    position: absolute; left: 16px; top: -100px; z-index: 100;
+    background: var(--warna-gelap); color: #fff; padding: 10px 16px; border-radius: var(--radius-kecil);
+}
+.lewati:focus { top: 12px; color: #fff; }
+
+/* Angka kecepatan: tebal dan miring seperti tulisan logo */
+.angka-kecepatan { font-style: italic; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+
+/* Tombol, card, form, alert, label, dan tabel memakai komponen UIkit (lihat uikit-jnet.css). */
+
+/* ---------- Kepala (navbar) ---------- */
+.kepala {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--warna-permukaan); border-bottom: 1px solid var(--warna-garis);
+}
+.kepala__isi { display: flex; align-items: center; gap: 24px; min-height: var(--tinggi-kepala); }
+.kepala__logo { flex: none; display: block; }
+.kepala__logo img { height: 44px; width: auto; }
+.kepala__menu { display: flex; align-items: center; gap: 24px; margin-left: auto; }
+
+.menu { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
+/* Revisi (23 November 2026): menu tanpa kotak latar, warna teks berubah "dari pudar ke tegas". Teks biasa
+   abu-abu kebiruan (kontras 7:1 di putih); saat disorot menjadi navy JNET yang hampir hitam; selama ditekan
+   sedikit meredup. Tanpa biru terang, karena dinilai kurang enak dilihat. Kotak abu-abu bawaan browser HP saat
+   diketuk dimatikan; fokus keyboard tetap memakai garis fokus. */
+.menu__tautan {
+    position: relative; display: block; padding: 10px 12px; white-space: nowrap;
+    color: var(--warna-teks-redup); font-weight: 600; text-decoration: none; border-radius: var(--radius-kecil);
+    -webkit-tap-highlight-color: transparent;
+    transition: color .2s ease, opacity .2s ease;
+}
+.menu__tautan:hover { color: var(--warna-gelap); }
+/* Revisi mitra: garis oranye di bawah menu (beserta animasinya) dihapus. Halaman yang sedang dibuka
+   ditandai teks navy yang lebih tebal, jadi penandanya tidak hanya warna. */
+.menu__tautan[aria-current="page"],
+.menu__tautan--aktif { color: var(--warna-gelap); font-weight: 800; }
+.menu__tautan:active { opacity: .65; transition-duration: 0s; }
+/* Ikon menu dan label versi HP hanya untuk menu HP "speed dial" (lihat bagian di bawah); di layar lebar disembunyikan */
+.menu__ikon,
+.menu__subjudul-hp { display: none; }
+.kepala__akun { display: flex; align-items: center; gap: 8px; }
+
+/* Dropdown "Profil" (revisi mitra): Profil perusahaan, Kontak, dan Kemitraan dalam satu menu.
+   Dibuka/ditutup app.js lewat aria-expanded; tanpa JavaScript terbuka saat disorot/difokus. */
+.menu__grup { position: relative; }
+.menu__pemicu {
+    display: flex; align-items: center; gap: 6px;
+    border: 0; background: transparent; font: inherit; font-weight: 600; cursor: pointer;
+}
+.menu__panah {
+    width: 7px; height: 7px; margin-top: -3px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(45deg); transition: transform .2s ease, margin .2s ease;
+}
+.menu__pemicu[aria-expanded="true"] > .menu__panah { margin-top: 3px; transform: rotate(-135deg); }
+.menu__pemicu[aria-expanded="true"] { color: var(--warna-gelap); }
+/* Halaman aktif di dalam grup Profil: tombol dropdown ikut tebal (aturan .menu__pemicu di atas menimpa ketebalannya) */
+.menu__pemicu.menu__tautan--aktif { font-weight: 800; }
+.menu__sub { display: none; margin: 0; padding: 8px; list-style: none; }
+.menu__pemicu[aria-expanded="true"] + .menu__sub,
+html:not(.js) .menu__grup:hover .menu__sub,
+html:not(.js) .menu__grup:focus-within .menu__sub { display: grid; gap: 2px; }
+
+/* Satu pilihan: ubin ikon + judul + keterangan singkat + panah yang muncul saat disorot */
+.menu__subtautan {
+    display: grid; grid-template-columns: 42px minmax(0, 1fr) 18px; align-items: center; gap: 14px;
+    padding: 10px 12px; border-radius: 12px; text-decoration: none; color: var(--warna-teks);
+    transition: background-color .2s ease;
+}
+.menu__subikon {
+    display: grid; place-items: center; width: 42px; height: 42px; border-radius: 11px;
+    background: var(--warna-info-latar); color: var(--warna-aksi);
+    transition: background-color .25s ease, color .25s ease, transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease;
+}
+.menu__subikon .ikon { width: 22px; height: 22px; }
+.menu__subteks { display: grid; gap: 2px; }
+.menu__subjudul { font-weight: 700; color: var(--warna-gelap); line-height: 1.3; transition: color .2s ease; }
+.menu__subketerangan { font-size: .8125rem; font-weight: 500; line-height: 1.4; color: var(--warna-teks-redup); }
+.menu__subpanah {
+    width: 18px; height: 18px; color: var(--warna-aksi);
+    opacity: 0; transform: translateX(-8px); transition: opacity .2s ease, transform .25s cubic-bezier(.2, .8, .2, 1);
+}
+.menu__subtautan:hover,
+.menu__subtautan:focus-visible { background: var(--warna-latar-alt); }
+.menu__subtautan:hover .menu__subikon,
+.menu__subtautan:focus-visible .menu__subikon {
+    background: var(--warna-aksi); color: #fff; transform: translateY(-2px) rotate(-4deg);
+    box-shadow: 0 8px 16px rgba(0, 51, 153, .28);
+}
+.menu__subtautan:hover .menu__subjudul,
+.menu__subtautan:focus-visible .menu__subjudul { color: var(--warna-aksi); }
+.menu__subtautan:hover .menu__subpanah,
+.menu__subtautan:focus-visible .menu__subpanah { opacity: 1; transform: none; }
+/* Halaman yang sedang dibuka */
+.menu__subtautan[aria-current="page"] { background: var(--warna-info-latar); }
+.menu__subtautan[aria-current="page"] .menu__subikon { background: var(--warna-aksi); color: #fff; }
+.menu__subtautan[aria-current="page"] .menu__subjudul { color: var(--warna-aksi); }
+
+/* Pilihan muncul bergantian dari atas ke bawah setiap kali dropdown dibuka */
+.menu__pemicu[aria-expanded="true"] + .menu__sub > li {
+    animation: sub-masuk .32s cubic-bezier(.2, .8, .2, 1) both;
+    animation-delay: calc(var(--urutan, 0) * 45ms + 40ms);
+}
+@keyframes sub-masuk {
+    from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (min-width: 1024px) {
+    /* Panel kaca buram (frosted glass) mengambang di tengah bawah tombol, muncul memudar dan turun sedikit.
+       Navbar putih: kaca terang. Di atas banner (navbar transparan): kaca navy, lihat bagian "Kepala transparan". */
+    .menu__sub {
+        position: absolute; top: calc(100% + 12px); left: 50%; z-index: 60;
+        width: 364px; margin-left: -182px;
+        background: rgba(255, 255, 255, .78);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(2, 29, 58, .08); border-radius: 16px;
+        box-shadow: 0 24px 48px rgba(2, 29, 58, .16), 0 2px 6px rgba(2, 29, 58, .05), inset 0 1px 0 rgba(255, 255, 255, .7);
+        opacity: 0; transform: translateY(-8px) scale(.98); transform-origin: top center;
+        transition: opacity .2s ease, transform .25s cubic-bezier(.2, .8, .2, 1), display .25s allow-discrete,
+                    background-color .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    /* Isi panel terang dibuat semi-transparan agar efek kacanya tetap terasa */
+    .menu__subikon { background: rgba(0, 51, 153, .08); }
+    .menu__subtautan:hover,
+    .menu__subtautan:focus-visible { background: rgba(0, 51, 153, .06); }
+    .menu__subtautan[aria-current="page"] { background: rgba(0, 51, 153, .09); }
+    .menu__subjudul,
+    .menu__subketerangan { transition: color .3s ease; }
+    /* Browser tanpa backdrop-filter: panel dibuat hampir penuh agar teks tetap terbaca */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        .menu__sub { background: rgba(255, 255, 255, .98); }
+    }
+    /* Jembatan tak terlihat agar panel tidak tertutup saat mouse turun dari tombol ke panel */
+    .menu__sub::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+    .menu__pemicu[aria-expanded="true"] + .menu__sub,
+    html:not(.js) .menu__grup:hover .menu__sub,
+    html:not(.js) .menu__grup:focus-within .menu__sub { opacity: 1; transform: none; }
+    @starting-style {
+        .menu__pemicu[aria-expanded="true"] + .menu__sub { opacity: 0; transform: translateY(-8px) scale(.98); }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .menu__sub,
+    .menu__subikon,
+    .menu__subpanah { transition: none; }
+    .menu__pemicu[aria-expanded="true"] + .menu__sub > li { animation: none; }
+    .menu__subtautan:hover .menu__subikon,
+    .menu__subtautan:focus-visible .menu__subikon { transform: none; }
+}
+
+/* Tombol di navbar: sedikit terangkat saat disorot, turun saat ditekan */
+.kepala .uk-button {
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.kepala .uk-button:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(2, 29, 58, .18); }
+.kepala .uk-button:active { transform: scale(.97); box-shadow: none; transition-duration: .1s; }
+
+.kepala__tombol-menu {
+    display: none; margin-left: auto; align-items: center; gap: 10px;
+    min-height: 44px; padding: 8px 14px;
+    border: 1px solid var(--warna-garis); border-radius: var(--radius); background: #fff;
+    color: var(--warna-gelap); font: inherit; font-weight: 700; cursor: pointer;
+    transition: background-color .2s ease, border-color .2s ease, transform .15s ease;
+}
+.kepala__tombol-menu:hover { border-color: var(--warna-teks-redup); }
+.kepala__tombol-menu:active { transform: scale(.96); }
+.kepala__ikon-menu,
+.kepala__ikon-menu::before,
+.kepala__ikon-menu::after {
+    display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px;
+    transition: transform .25s ease, background-color .2s ease;
+}
+.kepala__ikon-menu { position: relative; }
+.kepala__ikon-menu::before,
+.kepala__ikon-menu::after { content: ""; position: absolute; left: 0; }
+.kepala__ikon-menu::before { top: -6px; }
+.kepala__ikon-menu::after { top: 6px; }
+/* Saat menu terbuka, ikon tiga garis berubah menjadi tanda silang */
+[aria-expanded="true"] > .kepala__ikon-menu { background-color: transparent; }
+[aria-expanded="true"] > .kepala__ikon-menu::before { transform: translateY(6px) rotate(45deg); }
+[aria-expanded="true"] > .kepala__ikon-menu::after { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 1023px) {
+    .js .kepala__tombol-menu { display: inline-flex; }
+    /* Menu ponsel dibuka/ditutup dengan memudar dan bergeser halus. Saat tertutup tetap
+       display: none. Browser lama yang belum mengenal "allow-discrete" mengabaikan baris
+       transition ini, sehingga menu langsung muncul/hilang seperti sebelumnya. */
+    .js .kepala__menu {
+        display: none; position: absolute; left: 0; right: 0; top: 100%;
+        flex-direction: column; align-items: stretch; gap: 12px; margin: 0;
+        padding: 12px var(--gutter) 20px; background: #fff; border-bottom: 1px solid var(--warna-garis);
+        box-shadow: 0 12px 24px rgba(2, 29, 58, .08);
+        opacity: 0; transform: translateY(-8px);
+        transition: opacity .2s ease, transform .2s ease, display .2s allow-discrete;
+    }
+    .js [data-terbuka="true"] .kepala__menu { display: flex; opacity: 1; transform: none; }
+    @starting-style {
+        .js [data-terbuka="true"] .kepala__menu { opacity: 0; transform: translateY(-8px); }
+    }
+    .menu { flex-direction: column; }
+    .menu__tautan { padding: 12px; }
+    /* Di menu ponsel submenu terbuka ke bawah (akordeon), menjorok dengan garis di kiri */
+    .menu__pemicu { width: 100%; justify-content: space-between; text-align: left; }
+    .menu__sub { margin: 4px 0 6px; padding: 6px; border-radius: 14px; background: var(--warna-latar-alt); }
+    .menu__subtautan { grid-template-columns: 38px minmax(0, 1fr) 18px; gap: 12px; padding: 10px; }
+    .menu__subikon { width: 38px; height: 38px; border-radius: 10px; background: #fff; }
+    .menu__subtautan:hover,
+    .menu__subtautan:focus-visible { background: #fff; }
+    .menu__subtautan[aria-current="page"] { background: #fff; box-shadow: 0 2px 8px rgba(2, 29, 58, .08); }
+    .kepala__akun { padding-top: 12px; border-top: 1px solid var(--warna-garis); }
+    .kepala__akun .uk-button { flex: 1; }
+    /* Tanpa JavaScript: menu tetap tampil di bawah logo */
+    html:not(.js) .kepala__isi { flex-wrap: wrap; padding-block: 12px; }
+    html:not(.js) .kepala__menu { width: 100%; flex-direction: column; align-items: flex-start; }
+}
+
+/* ---------- Menu HP "speed dial" dengan tombol lambang JNET di pojok kanan bawah (revisi mitra 23 November 2026) ----------
+   Seperti tombol menu IndiHome: tombol berbentuk lambang brand di pojok kanan bawah (components/tombol-menu-lambang)
+   dan menu muncul ke atas darinya di atas latar navy buram. Tiap menu: label kapsul putih di kiri dan ikon bulat navy
+   berbingkai gradasi biru-oranye (warna lambang JNET) di kanan, sejajar dengan tombol lambang. Ketuk area kosong,
+   tombol lambang, atau Esc untuk menutup (app.js). Halaman aktif: label navy dan ikon putih.
+   Hanya untuk menu publik (kepala__menu--dial); menu halaman akun tetap panel biasa. */
+@media (max-width: 1023px) {
+    /* Lapisan menu menutup seluruh layar; isinya berjangkar di bawah, tepat di atas tombol lambang (72px), dan
+       kolom ikonnya segaris dengan tengah tombol. Bila layar terlalu pendek, isinya dapat digulir. */
+    /* Revisi: halaman di belakang tidak lagi diburamkan, cukup diredupkan (seperti IndiHome). */
+    .js .kepala__menu--dial {
+        position: fixed; inset: 0; z-index: 2;
+        align-items: flex-end; gap: 12px;
+        padding: calc(var(--tinggi-kepala) + 12px) calc(max(14px, env(safe-area-inset-right)) + 18px)
+            calc(max(14px, env(safe-area-inset-bottom)) + 88px + 18px) var(--gutter);
+        background: rgba(2, 29, 58, .62);
+        border-bottom: 0; box-shadow: none; transform: none;
+        /* Revisi: halaman di belakang dibuat diam tanpa mengubah overflow <html> (dulu overflow: hidden membuat
+           scrollbar hilang dan halaman bergeser). Gulir di atas lapisan ini berhenti di sini dan tidak diteruskan ke
+           halaman (overscroll-behavior: none, sekaligus tanpa efek pantul). */
+        overflow-y: auto; overscroll-behavior: none;
+    }
+    /* Lapisan dibuat selalu dapat digulir 1px, sehingga overscroll-behavior juga berlaku di browser yang hanya
+       menahannya bila isinya meluap (misalnya Safari di iPhone). Tidak terlihat dan tidak dapat diketuk. */
+    .js .kepala__menu--dial::after {
+        content: ""; position: absolute; top: 0; left: 0; width: 1px; height: calc(100% + 1px); pointer-events: none;
+    }
+    /* Gesekan yang dimulai di tombol lambang saat menu terbuka juga tidak menggulir halaman */
+    .js [data-terbuka="true"] .tombol-lambang { touch-action: none; }
+    .js [data-terbuka="true"] .kepala__menu--dial { transform: none; }
+    @starting-style {
+        .js [data-terbuka="true"] .kepala__menu--dial { transform: none; }
+    }
+    .js .kepala__menu--dial :focus-visible { outline-color: #fff; outline-offset: 4px; border-radius: 999px; }
+
+    .js .kepala__menu--dial .menu { margin-top: auto; align-items: flex-end; gap: 12px; }
+
+    /* Grup "Profil" (revisi): satu item berlabel Profil dengan panah kecil; diketuk, isinya (Profil JNET, Kontak,
+       Kemitraan B2B) muncul di bawahnya sebagai menu yang lebih kecil, disambung garis tipis dari ikon Profil.
+       Buka/tutupnya memakai skrip dropdown yang sama dengan desktop (aria-expanded). */
+    .js .kepala__menu--dial .menu__grup { display: flex; flex-direction: column; align-items: flex-end; }
+    .js .kepala__menu--dial .menu__tautan.menu__pemicu { width: auto; justify-content: flex-start; text-align: right; }
+    .js .kepala__menu--dial .menu__pemicu .menu__panah { display: none; }
+    .js .kepala__menu--dial .menu__pemicu .menu__label { display: flex; align-items: center; gap: 8px; }
+    .js .kepala__menu--dial .menu__pemicu .menu__label::after {
+        content: ""; width: 7px; height: 7px; margin-top: -3px;
+        border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: 45deg;
+        transition: rotate .25s ease, margin .25s ease;
+    }
+    .js .kepala__menu--dial .menu__pemicu[aria-expanded="true"] .menu__label::after { margin-top: 3px; rotate: -135deg; }
+    .js .kepala__menu--dial .menu__pemicu[aria-expanded="true"] .menu__ikon { box-shadow: 0 0 0 4px rgba(255, 255, 255, .3), 0 8px 18px rgba(0, 8, 24, .3); }
+    .js .kepala__menu--dial .menu__sub { position: relative; display: none; margin: 0; padding: 12px 0 0; background: none; }
+    .js .kepala__menu--dial .menu__pemicu[aria-expanded="true"] + .menu__sub { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .js .kepala__menu--dial .menu__sub::before {
+        content: ""; position: absolute; z-index: -1; right: 25px; top: 0; bottom: 22px; width: 2px;
+        border-radius: 2px; background: rgba(255, 255, 255, .32);
+    }
+    .js .kepala__menu--dial .menu__sub > li { margin-right: 4px; }
+    .js .kepala__menu--dial .menu__subjudul-hp { display: inline; }
+    .js .kepala__menu--dial .menu__subjudul-hp + .menu__subjudul { display: none; }
+
+    /* Satu menu = satu tautan (label + ikon), jadi seluruh barisnya dapat diketuk */
+    .js .kepala__menu--dial .menu__tautan,
+    .js .kepala__menu--dial .menu__subtautan {
+        display: flex; flex-direction: row-reverse; align-items: center; gap: 12px;
+        padding: 0; border-radius: 999px; background: none; box-shadow: none; color: var(--warna-gelap);
+    }
+    .js .kepala__menu--dial .menu__tautan:active { opacity: 1; }
+    .js .kepala__menu--dial .menu__label,
+    .js .kepala__menu--dial .menu__subteks {
+        display: block; padding: 9px 16px; border-radius: 999px;
+        background: #fff; color: var(--warna-gelap); font-size: .9375rem; font-weight: 700; line-height: 1.2; white-space: nowrap;
+        box-shadow: 0 8px 20px rgba(0, 8, 20, .24);
+    }
+    .js .kepala__menu--dial .menu__subjudul { color: inherit; font-weight: 700; }
+    .js .kepala__menu--dial .menu__subketerangan,
+    .js .kepala__menu--dial .menu__subpanah { display: none; }
+    /* Ikon bulat (revisi: lebih simpel): satu warna polos biru JNET (#0077C5, warna garis tengah lambang)
+       dengan ikon putih, tanpa gradasi atau bingkai. */
+    .js .kepala__menu--dial .menu__ikon,
+    .js .kepala__menu--dial .menu__subtautan .menu__subikon {
+        display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%;
+        border: 0; background: var(--jnet-biru-serat); color: #fff; transform: none;
+        box-shadow: 0 8px 18px rgba(0, 8, 24, .3);
+        scale: 1;
+    }
+    .js .kepala__menu--dial .menu__ikon .ikon,
+    .js .kepala__menu--dial .menu__subikon .ikon { width: 24px; height: 24px; }
+    /* Isi grup Profil: lingkaran kaca 44px dan label sedikit lebih kecil, sebagai turunan dari item Profil */
+    .js .kepala__menu--dial .menu__subtautan .menu__subikon { width: 44px; height: 44px; }
+    .js .kepala__menu--dial .menu__subtautan .menu__subikon .ikon { width: 21px; height: 21px; }
+    .js .kepala__menu--dial .menu__subteks { padding: 8px 14px; font-size: .875rem; }
+    /* Halaman yang sedang dibuka: label navy (teks putih) dan ikon putih berikon biru. Grup Profil ikut ditandai
+       bila halaman aktif ada di dalamnya. */
+    .js .kepala__menu--dial .menu__tautan[aria-current="page"] .menu__label,
+    .js .kepala__menu--dial .menu__tautan--aktif .menu__label,
+    .js .kepala__menu--dial .menu__subtautan[aria-current="page"] .menu__subteks { background: var(--warna-gelap); color: #fff; }
+    .js .kepala__menu--dial .menu__subtautan[aria-current="page"] .menu__subjudul { color: #fff; }
+    .js .kepala__menu--dial .menu__tautan[aria-current="page"] .menu__ikon,
+    .js .kepala__menu--dial .menu__tautan--aktif .menu__ikon,
+    .js .kepala__menu--dial .menu__subtautan[aria-current="page"] .menu__subikon {
+        background: #fff; color: var(--jnet-biru-serat);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, .3), 0 8px 18px rgba(0, 8, 24, .3);
+    }
+
+    /* Masuk dan Daftar (atau Akun saya) di baris terakhir, berbentuk kapsul */
+    .js .kepala__menu--dial .kepala__akun { flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding-top: 6px; border-top: 0; }
+    .js .kepala__menu--dial .kepala__akun .menu__tautan {
+        padding: 11px 20px; background: #fff; color: var(--warna-gelap); font-weight: 700; box-shadow: 0 8px 20px rgba(0, 8, 20, .24);
+    }
+    .js .kepala__menu--dial .kepala__akun .uk-button { flex: none; min-height: 44px; padding-inline: 22px; border-radius: 999px; box-shadow: 0 8px 20px rgba(0, 8, 20, .3); }
+
+    /* Tombol lambang JNET (components/tombol-menu-lambang): mengambang di pojok kanan bawah, di atas lapisan menu */
+    .js .kepala .kepala__tombol-menu.tombol-lambang {
+        position: fixed; z-index: 3;
+        right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom));
+        display: grid; place-items: center; width: 88px; height: 88px; min-height: 0; margin: 0; padding: 0;
+        border: 0; border-radius: 50%; background: none; color: inherit;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .js .kepala .tombol-lambang:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 2px; border-radius: 50%; }
+    .js [data-terbuka="true"] .tombol-lambang:focus-visible { outline-color: #fff; }
+    /* Bingkai putih tipis yang mengikuti bentuk lambang, ditambah bayangan, agar tetap jelas di atas foto banner,
+       latar gelap, maupun latar putih */
+    .tombol-lambang__isi {
+        position: relative; display: block; width: 82px; aspect-ratio: 1025 / 845;
+        filter: drop-shadow(0 0 1px rgba(255, 255, 255, .95)) drop-shadow(0 0 2px rgba(255, 255, 255, .7)) drop-shadow(0 6px 10px rgba(2, 29, 58, .38));
+    }
+    .tombol-lambang__lengkung,
+    .tombol-lambang__garis,
+    .tombol-lambang__kilau { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .tombol-lambang__lengkung { rotate: 0deg; }
+    .tombol-lambang__garis { overflow: visible; }
+    .tombol-lambang__garis path { transform-box: fill-box; transform-origin: center; translate: 0 0; rotate: 0deg; scale: 1; }
+    /* Kilau: pita putih miring yang menyapu lambang, dipotong tepat mengikuti siluetnya */
+    .tombol-lambang__kilau {
+        overflow: hidden; pointer-events: none;
+        -webkit-mask: url("../images/brand/lambang-siluet.svg") center / 100% 100% no-repeat;
+        mask: url("../images/brand/lambang-siluet.svg") center / 100% 100% no-repeat;
+    }
+    .tombol-lambang__kilau::after {
+        content: ""; position: absolute; top: -30%; bottom: -30%; left: 0; width: 45%;
+        background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .15) 30%, rgba(255, 255, 255, .9) 50%, rgba(255, 255, 255, .15) 70%, rgba(255, 255, 255, 0) 100%);
+        translate: -130% 0; rotate: 18deg;
+    }
+    /* Terbuka: dua garis biru membentuk tanda silang di tengah lambang, garis bawah memudar, dan lengkung oranye
+       berputar setengah lingkaran mengelilinginya. Kilau berhenti selama menu terbuka. */
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__garis-1 { translate: 95px 98px; rotate: 45deg; scale: .78; }
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__garis-2 { translate: 170px -39px; rotate: -45deg; scale: .74; }
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__garis-3 { opacity: 0; scale: .5; }
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__lengkung { rotate: 180deg; }
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__kilau { opacity: 0; }
+
+    /* Revisi (HP): CS pindah ke pojok kanan atas (kepala__cs), jadi tombol CS bulat yang melayang disembunyikan */
+    body:has(.kepala__cs) .tombol-cs { display: none; }
+}
+
+/* ---------- Pojok kanan atas navbar HP: kolom "Cari apa?" dan ikon CS (revisi, seperti IndiHome) ----------
+   Hanya di layar < 1024px. Kolom cari berupa tautan ke halaman pencarian; ikon CS berupa headset polos tanpa
+   latar (hitam di navbar putih, putih di atas banner gelap seperti logo). */
+.kepala__alat { display: none; }
+@media (max-width: 1023px) {
+    .kepala__alat { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    /* Revisi: tulisan "Cari apa?" lebih kecil (13px) dan lebih redup, seperti teks petunjuk pada kolom isian */
+    .kepala__cari {
+        display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 10px;
+        border: 1px solid var(--warna-garis); border-radius: 999px; background: #fff;
+        color: var(--warna-teks-redup); font-size: .8125rem; font-weight: 500; text-decoration: none; white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+        transition: border-color .2s ease, background-color .2s ease;
+    }
+    .kepala__cari:hover { color: var(--warna-gelap); border-color: var(--warna-teks-redup); }
+    .kepala__cari .ikon { width: 16px; height: 16px; }
+    .kepala__cs {
+        display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+        color: #0B1220; text-decoration: none; -webkit-tap-highlight-color: transparent;
+    }
+    .kepala__cs:hover { color: #000; }
+    .kepala__cs:active,
+    .kepala__cari:active { opacity: .7; }
+    /* Di atas banner gelap (navbar transparan HP): kaca gelap dan ikon putih agar tetap terlihat */
+    .js .kepala--transparan-hp:not(.kepala--padat):not(.kepala--di-terang) .kepala__cari {
+        border-color: rgba(255, 255, 255, .32); background: rgba(2, 29, 58, .28); color: rgba(255, 255, 255, .78);
+    }
+    .js .kepala--transparan-hp:not(.kepala--padat):not(.kepala--di-terang) .kepala__cs { color: #fff; }
+    .js .kepala--transparan-hp.kepala--di-terang:not(.kepala--padat) .kepala__cari {
+        border-color: rgba(2, 29, 58, .14); background: rgba(255, 255, 255, .6);
+    }
+}
+/* Ruang sempit (≤ 359px): kolom cari cukup ikon kaca pembesar */
+@media (max-width: 359px) {
+    .kepala__cari { padding-inline: 11px; }
+    .kepala__cari span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* ---------- Halaman pencarian (/cari) ---------- */
+.cari__wadah { display: block; margin-top: 24px; max-width: 640px; }
+.cari__label { display: block; margin-bottom: 8px; color: #fff; font-weight: 700; }
+.cari__baris { display: flex; gap: 10px; }
+.cari__kolom { flex: 1; min-width: 0; min-height: 48px; border-radius: 999px; padding-inline: 20px; font: inherit; font-size: max(1rem, 1em); }
+.cari__aksi { display: flex; flex: none; }
+.cari__tombol { flex: none; min-height: 48px; border-radius: 999px; }
+.cari__tombol .ikon { width: 20px; height: 20px; }
+.cari__judul { margin-bottom: 20px; }
+.cari__kelompok { margin: 28px 0 12px; font-size: 1rem; color: var(--warna-teks-redup); letter-spacing: .02em; }
+.cari__daftar { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.cari__item {
+    display: grid; gap: 2px; padding: 14px 18px; border: 1px solid var(--warna-garis); border-radius: 14px;
+    background: #fff; color: var(--warna-teks); text-decoration: none;
+    transition: border-color .2s ease, background-color .2s ease;
+}
+.cari__item:hover { border-color: var(--jnet-biru-serat); background: var(--warna-latar-alt); color: var(--warna-teks); }
+.cari__item-judul { font-weight: 700; color: var(--warna-gelap); }
+.cari__item-teks { font-size: var(--ukuran-kecil); color: var(--warna-teks-redup); }
+.cari__kosong { max-width: 60ch; }
+/* Gerak: menu muncul bergantian dari bawah (paling dekat tombol lambang dulu) dengan pegas; ikon mengecil saat
+   ditekan; lambang berubah menjadi tanda silang; kilau menyapu lambang setiap 4,5 detik. Hanya bila "kurangi animasi"
+   tidak aktif; selain itu menu cukup memudar dan lambang langsung berganti tanpa gerak. */
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+    .js [data-terbuka="true"] .kepala__menu--dial :is(.menu > li, .kepala__akun) {
+        transform-origin: 100% 100%;
+        animation: dial-naik .5s cubic-bezier(.34, 1.56, .64, 1) both;
+        animation-timing-function: linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+        animation-delay: calc((var(--dial-akhir, 0) - var(--dial, 0)) * 40ms);
+    }
+    .tombol-lambang__garis path {
+        transition: translate .5s cubic-bezier(.34, 1.56, .64, 1), rotate .5s cubic-bezier(.34, 1.56, .64, 1), scale .5s cubic-bezier(.34, 1.56, .64, 1), opacity .25s ease;
+        transition-timing-function:
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1),
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1),
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1),
+            ease;
+    }
+    .tombol-lambang__lengkung { transition: rotate .6s cubic-bezier(.34, 1.56, .64, 1); }
+    .tombol-lambang__kilau { transition: opacity .2s ease; }
+    .tombol-lambang__kilau::after { animation: lambang-kilau 4.5s ease-in-out infinite; }
+    .tombol-lambang[aria-expanded="true"] .tombol-lambang__kilau::after { animation-play-state: paused; }
+    /* Isi grup Profil muncul bergantian dari ikon Profil saat diketuk */
+    .js .kepala__menu--dial .menu__pemicu[aria-expanded="true"] + .menu__sub > li {
+        transform-origin: 100% 0;
+        animation: dial-masuk .45s cubic-bezier(.34, 1.56, .64, 1) both;
+        animation-timing-function: linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+        animation-delay: calc(var(--urutan, 0) * 50ms);
+    }
+    .js .kepala__menu--dial .menu__ikon,
+    .js .kepala__menu--dial .menu__subtautan .menu__subikon { transition: scale .35s cubic-bezier(.34, 1.56, .64, 1); }
+    .js .kepala__menu--dial .menu__tautan:active .menu__ikon,
+    .js .kepala__menu--dial .menu__subtautan:active .menu__subikon { scale: .88; transition-duration: .08s; }
+}
+@keyframes dial-masuk {
+    from { opacity: 0; translate: 12px -18px; scale: .55; }
+}
+@keyframes dial-naik {
+    from { opacity: 0; translate: 10px 22px; scale: .55; }
+}
+@keyframes lambang-kilau {
+    0%, 58% { translate: -130% 0; }
+    82%, 100% { translate: 260% 0; }
+}
+
+/* Layar 1024–1199px: menu dibuat sedikit lebih rapat agar tetap satu baris bersama tombol akun. */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .kepala__isi,
+    .kepala__menu { gap: 16px; }
+    .menu__tautan { padding-inline: 8px; font-size: .9375rem; }
+}
+
+/* ---------- Kepala transparan di atas banner (beranda, layar lebar) ----------
+   Di atas banner navbar ikut warna foto (transparan, teks putih). Setelah
+   halaman digulir, app.js menambah kelas .kepala--padat sehingga navbar
+   kembali putih. Di layar 768–1023px dan tanpa JavaScript navbar tetap putih; di HP
+   (≤ 767px) lihat "Kepala transparan di HP". */
+@media (min-width: 1024px) {
+    .js .kepala--transparan {
+        position: fixed; top: 0; left: 0; right: 0;
+        transition: background-color .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .js .kepala--transparan:not(.kepala--padat) {
+        background: linear-gradient(180deg, rgba(2, 29, 58, .7) 0%, rgba(2, 29, 58, .35) 60%, rgba(2, 29, 58, 0) 100%);
+        background-origin: border-box; /* gradien tidak berulang di garis bawah */
+        border-bottom-color: transparent;
+    }
+    /* Logo ikut berubah halus bersama latar dan teks navbar saat halaman digulir */
+    .js .kepala--transparan .kepala__logo img { transition: filter .25s ease; }
+    .js .kepala--transparan:not(.kepala--padat) .kepala__logo img { filter: brightness(0) invert(1); }
+    /* Di atas banner gelap, pola yang sama dalam warna terang: teks biasa putih agak pudar; saat disorot,
+       halaman aktif (tebal), dan dropdown terbuka menjadi putih penuh. Tanpa kotak latar. */
+    .js .kepala--transparan:not(.kepala--padat) .menu__tautan { color: rgba(255, 255, 255, .78); }
+    .js .kepala--transparan:not(.kepala--padat) .menu__tautan:hover,
+    .js .kepala--transparan:not(.kepala--padat) .menu__tautan[aria-current="page"],
+    .js .kepala--transparan:not(.kepala--padat) .menu__tautan--aktif,
+    .js .kepala--transparan:not(.kepala--padat) .menu__pemicu[aria-expanded="true"] { color: #fff; }
+    .js .kepala--transparan:not(.kepala--padat) :focus-visible { outline-color: #fff; }
+
+    /* Dropdown Profil di atas banner: kaca navy transparan dengan teks putih */
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__sub {
+        background: rgba(2, 29, 58, .62);
+        border-color: rgba(255, 255, 255, .16);
+        box-shadow: 0 18px 36px rgba(0, 8, 20, .26), inset 0 1px 0 rgba(255, 255, 255, .12);
+    }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subjudul { color: #fff; }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subketerangan { color: rgba(255, 255, 255, .78); }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subikon {
+        background: rgba(255, 255, 255, .1); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14);
+    }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subpanah { color: #fff; }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan:hover,
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan:focus-visible { background: rgba(255, 255, 255, .1); }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan[aria-current="page"] { background: rgba(255, 255, 255, .14); }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan:hover .menu__subikon,
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan:focus-visible .menu__subikon,
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan[aria-current="page"] .menu__subikon {
+        background: #fff; color: var(--warna-aksi); box-shadow: 0 8px 18px rgba(0, 8, 20, .3);
+    }
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan:hover .menu__subjudul,
+    .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__subtautan[aria-current="page"] .menu__subjudul { color: #fff; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        .js .kepala--transparan:not(.kepala--padat):not(.kepala--di-terang) .menu__sub { background: rgba(2, 29, 58, .95); }
+    }
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .menu__pemicu[aria-expanded="true"] { color: var(--warna-gelap); }
+    .js .kepala--transparan.kepala--padat { box-shadow: 0 6px 20px rgba(2, 29, 58, .08); }
+    /* Di atas latar terang (Profil): tanpa gradien gelap, teks dan logo tetap berwarna asli */
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) { background: transparent; }
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .kepala__logo img { filter: none; }
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .menu__tautan { color: var(--warna-teks-redup); }
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .menu__tautan:hover,
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .menu__tautan[aria-current="page"],
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) .menu__tautan--aktif { color: var(--warna-gelap); }
+    .js .kepala--transparan.kepala--di-terang:not(.kepala--padat) :focus-visible { outline-color: var(--warna-fokus); }
+}
+
+/* ---------- Kepala transparan di HP ----------
+   Revisi mitra (seperti IndiHome): di HP navbar juga melayang di atas banner, logo dan tombol Menu
+   berwarna putih. Berlaku di beranda (bila semua banner punya versi HP tegak) dan, seperti di desktop,
+   di halaman berbanner judul: Paket, Jangkauan, Alur, Kontak, Bayar tagihan, Kemitraan, dan Profil
+   (ruang untuk navbar diberikan pada banner masing-masing). Di atas banner terang (.kepala--di-terang)
+   logo tetap berwarna asli dan tombol Menu berupa kaca putih. Setelah halaman digulir, app.js menambah
+   .kepala--padat sehingga navbar kembali putih; membuka menu lambang tidak mengubah navbar. Tanpa JavaScript
+   navbar tetap putih. */
+@media (max-width: 767px) {
+    .js .kepala--transparan-hp {
+        position: fixed; top: 0; left: 0; right: 0;
+        transition: background-color .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .js .kepala--transparan-hp:not(.kepala--padat) {
+        background: linear-gradient(180deg, rgba(2, 29, 58, .55) 0%, rgba(2, 29, 58, .2) 70%, rgba(2, 29, 58, 0) 100%);
+        background-origin: border-box;
+        border-bottom-color: transparent;
+    }
+    .js .kepala--transparan-hp.kepala--padat { box-shadow: 0 6px 20px rgba(2, 29, 58, .08); }
+    .js .kepala--transparan-hp .kepala__logo img { transition: filter .25s ease; }
+    .js .kepala--transparan-hp:not(.kepala--padat) .kepala__logo img { filter: brightness(0) invert(1); }
+    .js .kepala--transparan-hp:not(.kepala--padat) .kepala__tombol-menu:not(.tombol-lambang) {
+        border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .12); color: #fff;
+        -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+    .js .kepala--transparan-hp:not(.kepala--padat) :focus-visible { outline-color: #fff; }
+
+    /* Di atas banner terang (Kemitraan, Profil): tanpa gradien gelap */
+    .js .kepala--transparan-hp.kepala--di-terang:not(.kepala--padat) { background: transparent; }
+    .js .kepala--transparan-hp.kepala--di-terang:not(.kepala--padat) .kepala__logo img { filter: none; }
+    .js .kepala--transparan-hp.kepala--di-terang:not(.kepala--padat) .kepala__tombol-menu:not(.tombol-lambang) {
+        border-color: rgba(2, 29, 58, .14); background: rgba(255, 255, 255, .6); color: var(--warna-gelap);
+    }
+    .js .kepala--transparan-hp.kepala--di-terang:not(.kepala--padat) :focus-visible { outline-color: var(--warna-fokus); }
+}
+
+/* ---------- Hero ---------- */
+.hero { background: var(--warna-gelap); color: var(--warna-teks-di-gelap); overflow: hidden; }
+.hero :focus-visible { outline-color: #fff; }
+.hero__isi {
+    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center; gap: clamp(32px, 5vw, 72px);
+    padding-block: clamp(48px, 7vw, 96px);
+}
+.hero__judul { color: #fff; max-width: 15ch; }
+.hero__lead { margin-top: 20px; max-width: 46ch; font-size: 1.125rem; color: var(--warna-teks-redup-di-gelap); }
+.hero__aksi { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+/* Tangga kecepatan: panjang batang sebanding dengan kecepatan paket */
+.tangga { display: grid; gap: 14px; }
+.tangga__baris {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px;
+    color: #fff; text-decoration: none;
+}
+.tangga__batang {
+    position: relative; display: flex; align-items: center;
+    width: calc(38% + 62% * var(--rasio, 1)); height: 64px; padding-left: 22px;
+    background: var(--gradien-batang); transform: skewX(var(--miring)); border-radius: 4px;
+    transform-origin: left center;
+    transition: filter .15s ease;
+}
+.tangga__batang::after {
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 14px;
+    background: var(--gradien-sinyal); border-radius: 0 4px 4px 0;
+}
+.tangga__label { display: inline-flex; align-items: baseline; gap: 6px; transform: skewX(calc(var(--miring) * -1)); font-weight: 700; }
+.tangga__label .angka-kecepatan { font-size: 2rem; line-height: 1; }
+.tangga__harga { font-weight: 700; color: var(--warna-teks-redup-di-gelap); font-variant-numeric: tabular-nums; }
+.tangga__baris:hover .tangga__batang { filter: brightness(1.15); }
+.tangga__baris:hover .tangga__harga { color: #fff; }
+
+/* ---------- Akses cepat ---------- */
+.akses-cepat { border-bottom: 1px solid var(--warna-garis); }
+.akses-cepat__daftar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; padding: 0; list-style: none; }
+.akses-cepat__daftar a {
+    display: flex; flex-direction: column; gap: 2px; height: 100%;
+    padding: 20px 16px; text-decoration: none; color: var(--warna-teks);
+    border-left: 1px solid var(--warna-garis);
+}
+.akses-cepat__daftar li:first-child a { border-left: 0; padding-left: 0; }
+.akses-cepat__daftar strong { color: var(--warna-gelap); }
+.akses-cepat__daftar span { font-size: var(--ukuran-kecil); color: var(--warna-teks-redup); }
+.akses-cepat__daftar a:hover strong { color: var(--warna-aksi); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Bagian umum (jarak dan latar dari uk-section) ---------- */
+.bagian__kepala { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 32px; }
+.bagian__judul { margin-bottom: 32px; }
+.bagian__kepala .bagian__judul { margin-bottom: 0; }
+.bagian__aksi { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+.tautan-lanjut { font-weight: 700; }
+
+/* Banner judul halaman: gradasi biru JNET + pola titik + garis serat optik (tanpa foto) */
+.kepala-halaman {
+    position: relative; isolation: isolate; overflow: hidden;
+    padding-block: clamp(44px, 6vw, 80px);
+    color: var(--warna-teks-redup-di-gelap);
+    background:
+        radial-gradient(ellipse 60% 90% at 100% 0%, rgba(0, 173, 239, .28), transparent 60%),
+        radial-gradient(ellipse 45% 70% at 0% 100%, rgba(255, 101, 1, .16), transparent 62%),
+        linear-gradient(120deg, var(--jnet-navy) 0%, #04285A 45%, var(--jnet-biru) 100%);
+}
+.kepala-halaman :focus-visible { outline-color: #fff; }
+.kepala-halaman::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background-image: radial-gradient(rgba(255, 255, 255, .2) 1.2px, transparent 1.7px);
+    background-size: 16px 16px;
+    -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 75%);
+    mask-image: linear-gradient(100deg, transparent 35%, #000 75%);
+}
+.kepala-halaman__serat { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+/* Komponen hiasan-serat (banner halaman dan halaman masuk/daftar) */
+.hiasan-serat path { vector-effect: non-scaling-stroke; }
+.hiasan-serat__berkas path { stroke-width: 1.4; }
+.hiasan-serat__kilau {
+    stroke-width: 3; stroke-dasharray: 70 930; stroke-dashoffset: 1000;
+    filter: drop-shadow(0 0 6px currentColor); opacity: .9;
+    animation: kilau-serat 6s linear infinite;
+}
+.hiasan-serat__kilau--2 { animation-duration: 8s; animation-delay: -3s; }
+@keyframes kilau-serat { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .hiasan-serat__kilau { animation: none; opacity: 0; }
+}
+
+.kepala-halaman__isi { position: relative; }
+.kepala-halaman h1 { color: #fff; }
+.kepala-halaman__teks > p { margin-top: 12px; max-width: 60ch; font-size: 1.125rem; }
+.kepala-halaman--bersamping .kepala-halaman__isi {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    align-items: center; gap: clamp(28px, 5vw, 72px);
+}
+
+/* Revisi mitra: banner penuh Kemitraan bergaya motion graphic (senada dengan banner Profil).
+   Latar terang + pola titik; kanvas diisi js/salaman-partikel.js (jabat tangan dari titik cahaya). */
+.banner-kemitraan {
+    position: relative; isolation: isolate; overflow: hidden;
+    display: flex; align-items: center; min-height: clamp(460px, 66vh, 640px);
+    background: linear-gradient(90deg, #E2EEF9 0%, #F4F8FC 30%, #FBFCFE 50%, #F7F3F1 70%, #F5ECE6 100%);
+    border-bottom: 1px solid var(--warna-garis);
+}
+.banner-kemitraan::before {
+    content: ""; position: absolute; inset: 0; z-index: -3;
+    background-image: radial-gradient(rgba(2, 29, 58, .13) 1px, transparent 1.6px);
+    background-size: 18px 18px;
+    -webkit-mask-image: linear-gradient(100deg, transparent 20%, #000 70%);
+    mask-image: linear-gradient(100deg, transparent 20%, #000 70%);
+}
+.banner-kemitraan__kanvas { position: absolute; inset: 0; z-index: -2; display: block; width: 100%; height: 100%; pointer-events: none; }
+.banner-kemitraan__isi { width: 100%; padding-block: clamp(40px, 6vw, 72px); }
+.banner-kemitraan__teks { max-width: 500px; }
+.banner-kemitraan h1 { margin: 0; color: var(--warna-gelap); font-size: var(--ukuran-h1); line-height: 1.1; letter-spacing: -.02em; }
+.banner-kemitraan__lead { margin: 18px 0 0; max-width: 44ch; font-size: 1.125rem; color: var(--warna-teks); }
+.banner-kemitraan__aksi { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.kemitraan__kontak { scroll-margin-top: calc(var(--tinggi-kepala) + 16px); }
+@media (min-width: 1024px) {
+    /* Navbar melayang di atas banner: beri ruang agar teks tidak tertutup */
+    .js .kepala--transparan ~ main .banner-kemitraan { padding-top: var(--tinggi-kepala); }
+}
+@media (max-width: 767px) {
+    /* Di HP navbar juga melayang di atas banner (lihat "Kepala transparan di HP") */
+    .js .kepala--transparan-hp ~ main .banner-kemitraan { padding-top: var(--tinggi-kepala); }
+}
+@media (max-width: 899px) {
+    /* HP/tablet: teks di atas, jabat tangan di bawahnya (ruangnya disediakan di sini) */
+    .banner-kemitraan { align-items: flex-start; min-height: 0; }
+    .banner-kemitraan__isi { padding-bottom: calc(min(100vw, 640px) * .6); }
+}
+
+/* Angka ringkas di bawah judul (halaman Paket) */
+.sorot-angka { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }
+.sorot-angka li {
+    padding: 8px 14px; border-radius: 999px; font-size: .9375rem; color: var(--warna-teks-redup-di-gelap);
+    background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16);
+}
+.sorot-angka strong { color: #fff; font-variant-numeric: tabular-nums; }
+
+/* Panel kaca di sisi kanan banner */
+.panel-kaca {
+    padding: clamp(18px, 2.4vw, 26px); border-radius: 22px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
+    border: 1px solid rgba(255, 255, 255, .18);
+    box-shadow: 0 24px 48px rgba(1, 12, 30, .35);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.panel-kaca__judul { margin: 0 0 14px; font-size: .8125rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--warna-teks-redup-di-gelap); }
+.tangga--ringkas { gap: 10px; }
+.tangga--ringkas .tangga__batang { height: 46px; padding-left: 18px; }
+.tangga--ringkas .tangga__label .angka-kecepatan { font-size: 1.5rem; }
+.tangga--ringkas .tangga__harga { font-size: .9375rem; }
+
+/* ---------- Spidometer paket (banner halaman Paket, revisi 23 November 2026) ----------
+   Pengganti batang kecepatan: busur dan jarum seperti tampilan speed test (referensi Dribbble "Internet speed
+   test – fast.com" dan LibreSpeed di GitHub). Pilih kecepatan -> jarum berayun, busur terisi, harga dan tombol
+   Pilih paket mengikuti. Komponen: components/spidometer-paket (HTML server) + pulau Vue SpidometerPaket.vue.
+   --sudut (derajat jarum) dan --isi (persen busur) diatur pada .spido__meter. */
+.spido__isi { display: grid; gap: 18px; }
+.spido__meter { position: relative; container-type: inline-size; width: min(100%, 340px); margin-inline: auto; }
+.spido__gambar { display: block; width: 100%; height: auto; overflow: visible; }
+.spido__jalur { fill: none; stroke: rgba(255, 255, 255, .12); stroke-width: 14; stroke-linecap: round; }
+.spido__busur {
+    fill: none; stroke: url(#spido-gradien); stroke-width: 14; stroke-linecap: round;
+    stroke-dasharray: 100 200; stroke-dashoffset: calc(100 - var(--isi, 0));
+    filter: drop-shadow(0 0 6px rgba(0, 173, 239, .55));
+}
+.spido__skala line { stroke: rgba(255, 255, 255, .3); stroke-width: 1.5; stroke-linecap: round; }
+.spido__garis-paket { stroke: rgba(255, 255, 255, .6); stroke-width: 2.5; stroke-linecap: round; }
+.spido__tanda text,
+.spido__nol {
+    fill: var(--warna-teks-redup-di-gelap); font-family: var(--font-utama); font-size: 14px; font-weight: 700;
+    text-anchor: middle; dominant-baseline: central; font-variant-numeric: tabular-nums;
+}
+.spido__nol { font-size: 12px; font-weight: 600; }
+.spido__tanda--aktif text { fill: #fff; font-weight: 800; }
+.spido__tanda--aktif .spido__garis-paket { stroke: #fff; }
+.spido__isi--siap .spido__tanda { cursor: pointer; }
+.spido__jarum {
+    fill: #fff; transform-box: view-box; transform-origin: 160px 150px; rotate: var(--sudut, 150deg);
+    filter: drop-shadow(0 2px 6px rgba(0, 8, 24, .45));
+}
+.spido__poros { fill: #fff; }
+.spido__poros-dalam { fill: var(--jnet-navy); }
+/* Angka kecepatan besar di celah bawah busur */
+.spido__baca {
+    position: absolute; left: 50%; bottom: 0; translate: -50% 0; margin: 0;
+    display: flex; align-items: baseline; gap: .3em; color: #fff; line-height: 1; white-space: nowrap;
+}
+.spido__angka { font-size: clamp(2.5rem, 16cqi, 3.5rem); }
+.spido__satuan { font-size: clamp(1rem, 5.5cqi, 1.25rem); font-weight: 700; color: var(--warna-teks-redup-di-gelap); }
+
+/* Pilihan kecepatan: radio asli yang disembunyikan secara visual (tetap terbaca pembaca layar), labelnya
+   berbentuk kapsul. Tanpa JavaScript, kapsulnya berupa tautan ke kartu paket. */
+.spido__pilihan { min-width: 0; margin: 0; padding: 0; border: 0; }
+.spido__deret { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 8px; }
+.spido__radio {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.spido__chip {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; background: rgba(255, 255, 255, .06);
+    color: #fff; font-size: .875rem; font-weight: 700; white-space: nowrap; text-decoration: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.spido__chip:hover { border-color: rgba(255, 255, 255, .7); color: #fff; }
+.spido__radio:checked + .spido__chip,
+.spido__chip--aktif,
+.spido__chip--aktif:hover { background: #fff; border-color: #fff; color: var(--warna-gelap); }
+.spido__radio:focus-visible + .spido__chip { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Ringkasan paket terpilih dan tombolnya */
+.spido__bawah {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px;
+    padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .14);
+}
+.spido__ringkas { display: grid; gap: 2px; margin: 0; }
+.spido__nama { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: .875rem; color: var(--warna-teks-redup-di-gelap); }
+.spido__label { padding: 2px 10px; border-radius: 999px; background: var(--gradien-label); color: #fff; font-size: .75rem; font-weight: 700; }
+.spido__harga { color: #fff; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.spido__periode { margin-left: 4px; font-size: .875rem; font-weight: 600; color: var(--warna-teks-redup-di-gelap); }
+.spido__aksi { flex: none; padding-inline: 20px; }
+/* HP: kapsul ringkasan di bawah judul disembunyikan karena isinya sudah ada di spidometer (jumlah dan rentang
+   kecepatan pada kapsul pilihan, harga termurah sebagai pilihan awal), agar banner tidak terlalu panjang. */
+@media (max-width: 767px) {
+    .kepala-halaman:has(.spido) .sorot-angka { display: none; }
+}
+
+/* Gerak: jarum berayun dengan pegas dan busur terisi halus. Hanya bila "kurangi animasi" tidak aktif;
+   selain itu jarum dan busur langsung berada di posisi akhirnya. */
+@media (prefers-reduced-motion: no-preference) {
+    .spido__jarum {
+        transition: rotate .9s cubic-bezier(.34, 1.56, .64, 1);
+        transition-timing-function: linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+    }
+    .spido__busur { transition: stroke-dashoffset .8s cubic-bezier(.22, 1, .36, 1); }
+}
+/* Sebelum pulau Vue siap, jarum dan busur menunggu di nol; begitu siap, keduanya naik ke paket terpilih.
+   Hanya bila skrip pulau Vue memang dimuat (.spido--pulau), agar tanpa build Vue jarum tetap menunjuk paketnya. */
+.js .spido--pulau .spido__isi:not(.spido__isi--siap) .spido__jarum { rotate: 150deg; }
+.js .spido--pulau .spido__isi:not(.spido__isi--siap) .spido__busur { stroke-dashoffset: 100; }
+
+/* Navbar transparan di atas banner judul (layar lebar): beri ruang di atas judul */
+@media (min-width: 1024px) {
+    .js .kepala--transparan ~ main .kepala-halaman { padding-top: calc(var(--tinggi-kepala) + clamp(32px, 4vw, 64px)); }
+}
+@media (max-width: 767px) {
+    .js .kepala--transparan-hp ~ main .kepala-halaman { padding-top: calc(var(--tinggi-kepala) + 32px); }
+}
+
+/* Rute tahapan di banner Alur Berlangganan */
+.rute { position: relative; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.rute::before,
+.rute::after {
+    content: ""; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; border-radius: 2px;
+}
+.rute::before { background: rgba(255, 255, 255, .16); }
+.rute::after {
+    /* Cahaya biru yang berakhir hijau di tahap "Terpasang" */
+    background: linear-gradient(180deg, var(--jnet-langit), var(--jnet-biru-serat) 60%, #4ADE80);
+    box-shadow: 0 0 10px rgba(0, 173, 239, .6);
+    transform-origin: top; transform: scaleY(1);
+    animation: rute-garis 8s ease-in-out infinite;
+}
+.rute__item { position: relative; display: flex; align-items: center; gap: 14px; }
+.rute__titik {
+    position: relative; z-index: 1; flex: none; display: grid; place-items: center;
+    width: 44px; height: 44px; border-radius: 50%;
+    font-weight: 800; color: #fff; font-variant-numeric: tabular-nums;
+    background: #0A2F66; border: 2px solid rgba(255, 255, 255, .22);
+    /* Titik terakhir menyala di detik ke-3,5, tepat saat garis hampir sampai ke bawah (--n = jumlah tahap) */
+    animation: rute-nyala 8s ease-in-out infinite; animation-delay: calc(var(--i) * 3.5s / (var(--n, 6) - 1));
+}
+.rute__titik .ikon { width: 22px; height: 22px; }
+.rute__judul { font-weight: 700; color: #fff; animation: rute-teks 8s ease-in-out infinite; animation-delay: calc(var(--i) * 3.5s / (var(--n, 6) - 1)); }
+/* Tahap terakhir "Terpasang": saat cahaya tiba, titik membesar sesaat dan menyala hijau cerah,
+   riak hijau menyebar, dan centang tergambar, seperti tanda berhasil. Waktunya sama dengan
+   titik lain (siklus 8 detik, jeda sesuai urutan), hanya warnanya yang berbeda. */
+.rute__item:last-child .rute__titik { animation-name: rute-berhasil; }
+.rute__item:last-child .rute__titik::after {
+    content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid #4ADE80; opacity: 0;
+    animation: rute-riak 8s ease-out infinite; animation-delay: calc(var(--i) * 3.5s / (var(--n, 6) - 1));
+}
+.rute__item:last-child .rute__titik .ikon { width: 24px; height: 24px; stroke-width: 2.8; }
+.rute__item:last-child .rute__titik .ikon path {
+    stroke-dasharray: 18; stroke-dashoffset: 18;
+    animation: rute-centang 8s ease-in-out infinite; animation-delay: calc(var(--i) * 3.5s / (var(--n, 6) - 1));
+}
+.rute__item:last-child .rute__judul { animation-name: rute-teks-berhasil; }
+@keyframes rute-berhasil {
+    0%, 100% {
+        transform: scale(1); background-color: #0A2F66; border-color: rgba(255, 255, 255, .22);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 0 0 rgba(74, 222, 128, 0);
+    }
+    6% {
+        transform: scale(1.14); background-color: #22C55E; border-color: #DCFCE7;
+        box-shadow: 0 0 0 9px rgba(34, 197, 94, .28), 0 0 26px rgba(74, 222, 128, .75);
+    }
+    14%, 70% {
+        transform: scale(1); background-color: #16A34A; border-color: #86EFAC;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 0 18px rgba(74, 222, 128, .55);
+    }
+}
+@keyframes rute-riak {
+    0%, 5% { opacity: 0; transform: scale(1); }
+    7% { opacity: .9; transform: scale(1); }
+    32%, 100% { opacity: 0; transform: scale(2); }
+}
+@keyframes rute-centang {
+    0%, 6% { stroke-dashoffset: 18; }
+    15%, 80% { stroke-dashoffset: 0; }
+    90%, 100% { stroke-dashoffset: 18; }
+}
+@keyframes rute-teks-berhasil {
+    0%, 100% { opacity: .6; color: #fff; }
+    6%, 70% { opacity: 1; color: #4ADE80; }
+}
+@keyframes rute-garis {
+    0% { transform: scaleY(0); opacity: 1; }
+    50% { transform: scaleY(1); opacity: 1; }
+    88% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes rute-nyala {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 173, 239, 0); border-color: rgba(255, 255, 255, .22); background-color: #0A2F66; }
+    6% { box-shadow: 0 0 0 8px rgba(0, 173, 239, .25); border-color: #7FD8FF; background-color: var(--jnet-biru-serat); }
+    14%, 70% { box-shadow: 0 0 0 0 rgba(0, 173, 239, 0); border-color: #7FD8FF; background-color: var(--jnet-biru); }
+}
+@keyframes rute-teks {
+    0%, 100% { opacity: .6; }
+    6%, 70% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rute::after, .rute__titik, .rute__judul,
+    .rute__item:last-child .rute__titik,
+    .rute__item:last-child .rute__judul,
+    .rute__item:last-child .rute__titik::after,
+    .rute__item:last-child .rute__titik .ikon path { animation: none; }
+    .rute__titik { border-color: #7FD8FF; background-color: var(--jnet-biru); }
+    /* Tanpa animasi: "Terpasang" langsung hijau dengan centang utuh */
+    .rute__item:last-child .rute__titik { border-color: #86EFAC; background-color: #16A34A; box-shadow: 0 0 18px rgba(74, 222, 128, .55); }
+    .rute__item:last-child .rute__titik .ikon path { stroke-dashoffset: 0; }
+    .rute__item:last-child .rute__judul { color: #4ADE80; }
+}
+.kepala-halaman--rute .kepala-halaman__isi { grid-template-columns: minmax(0, 1fr) minmax(0, 400px); }
+
+/* Animasi bumi di banner Jangkauan */
+.peta-bumi { position: relative; width: 100%; max-width: 440px; margin-inline: auto; aspect-ratio: 1; }
+.peta-bumi__kanvas { display: block; width: 100%; height: 100%; font-family: inherit; }
+html:not(.js) .kepala-halaman--peta .kepala-halaman__samping { display: none; }
+.kepala-halaman--peta .kepala-halaman__isi { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+.kepala-halaman--peta { padding-bottom: clamp(24px, 3vw, 40px); }
+/* Teks dinaikkan agar sejajar dengan Pulau Jawa di animasi, bukan di tengah kanvas persegi */
+@media (min-width: 1024px) {
+    .kepala-halaman--peta .kepala-halaman__teks { align-self: start; padding-top: clamp(40px, 6vw, 96px); }
+}
+
+@media (max-width: 767px) {
+    /* Di layar sempit garis serat dibuat sebagai pita di bagian bawah agar tidak tampak tegak */
+    .kepala-halaman__serat { top: auto; height: 170px; }
+}
+@media (max-width: 1023px) {
+    .kepala-halaman--bersamping .kepala-halaman__isi { grid-template-columns: 1fr; }
+    .kepala-halaman__samping { max-width: 560px; }
+    .kepala-halaman--peta .kepala-halaman__isi { grid-template-columns: 1fr; }
+    .peta-bumi { max-width: 340px; }
+}
+
+/* Banner animasi logo (halaman Profil). Video 16:9 ditampilkan utuh di tengah
+   (tidak dipotong); tepi kiri-kanannya memudar ke latar bergradasi yang
+   warnanya sama dengan tepi video, sehingga banner tetap selebar layar. */
+.banner-profil {
+    display: flex; justify-content: center;
+    background: linear-gradient(90deg, #E2EEF9 0%, #F4F8FC 30%, #FBFCFE 50%, #F7F3F1 70%, #F5ECE6 100%);
+    border-bottom: 1px solid var(--warna-garis);
+}
+.banner-profil__video {
+    display: block; width: min(100%, clamp(480px, 40vw, 640px)); height: auto; aspect-ratio: 16 / 9;
+    object-fit: cover; pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+@media (max-width: 559px) {
+    /* Di HP video selebar layar, tanpa efek pudar di tepi */
+    .banner-profil__video { -webkit-mask-image: none; mask-image: none; }
+}
+@media (min-width: 1024px) {
+    /* Navbar melayang di atas banner: beri ruang agar logo tidak tertutup */
+    .js .kepala--transparan ~ main .banner-profil { padding-top: var(--tinggi-kepala); }
+}
+@media (max-width: 767px) {
+    .js .kepala--transparan-hp ~ main .banner-profil { padding-top: var(--tinggi-kepala); }
+}
+
+/* ---------- Revisi mitra: tombol CS bulat melayang di pojok kanan bawah (membuka WhatsApp admin) ----------
+   Revisi 22-11-2026 (referensi Pinterest): lingkaran putih berisi headset biru JNET saja, dengan aksen biru
+   terang di ujung mikrofon. Kontras ikon terhadap putih > 4,5:1. Dasar uk-icon-button UIkit.
+   Tanpa kapsul jam layanan (dihapus atas permintaan pengguna). */
+.tombol-cs {
+    position: fixed; z-index: 45;
+    right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom));
+    display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%;
+    background: #fff; color: var(--warna-aksi); text-decoration: none;
+    /* garis tipis + bayangan berlapis agar lingkaran putih tetap terpisah dari latar putih halaman */
+    box-shadow: 0 0 0 1px rgba(2, 29, 58, .08), 0 10px 28px rgba(2, 29, 58, .2), 0 2px 6px rgba(2, 29, 58, .1);
+    transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease, color .3s ease;
+    animation: cs-muncul .5s cubic-bezier(.2, .8, .2, 1) .6s backwards;
+}
+.tombol-cs:hover {
+    background: #fff; color: var(--warna-aksi-hover); transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 0 1px rgba(0, 51, 153, .14), 0 0 0 7px rgba(0, 119, 197, .14), 0 16px 34px rgba(2, 29, 58, .26);
+}
+.tombol-cs:active { transform: scale(.95); transition-duration: .1s; }
+.tombol-cs:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 3px; }
+.tombol-cs__headset { display: block; width: 37px; height: 37px; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.tombol-cs__mik { fill: var(--jnet-biru-serat); }
+.tombol-cs:hover .tombol-cs__headset { transform: rotate(-8deg); }
+
+/* Dua kali denyut lembut (biru JNET) setelah tombol muncul, lalu diam */
+.tombol-cs::after {
+    content: ""; position: absolute; inset: -6px; border-radius: 50%;
+    border: 2px solid rgba(0, 119, 197, .55); opacity: 0; pointer-events: none;
+    animation: cs-denyut 2.2s ease-out 1.4s 2;
+}
+@keyframes cs-muncul { from { opacity: 0; transform: translateY(16px) scale(.9); } }
+@keyframes cs-denyut {
+    0% { opacity: .9; transform: scale(.9); }
+    100% { opacity: 0; transform: scale(1.35); }
+}
+@media (max-width: 767px) {
+    .tombol-cs { width: 56px; height: 56px; }
+    .tombol-cs__headset { width: 34px; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .tombol-cs, .tombol-cs::after { animation: none; }
+}
+/* Ruang kosong di bagian paling bawah agar tombol tidak menutupi tautan/isi terakhir */
+body:has(.tombol-cs) .kaki__bawah { padding-bottom: 88px; }
+body:has(.tombol-cs) .area-akun__isi { padding-bottom: 104px; }
+body.auth:has(.tombol-cs) { padding-bottom: 96px; }
+
+.kosong {
+    padding: 20px; border: 1px dashed var(--warna-garis); border-radius: var(--radius);
+    background: var(--warna-permukaan); color: var(--warna-teks-redup);
+}
+
+/* ---------- Keunggulan ---------- */
+/* Kolom dari uk-grid; garis atas ada di isi kolom agar tidak menyambung ke celah antarkolom */
+/* ---------- Tanya jawab "Kenapa memilih JNET?" ----------
+   Revisi mitra (referensi FAQ IndiHome, diberi pembeda): panel putih dua kolom. Kiri: judul,
+   penjelasan, dan tombol chat (bukan kolom pencarian). Kanan: akordeon <details> dengan penanda panah
+   tepat sebelum pertanyaan (penanda dekat label lebih mudah dikaitkan, juga bagi pengguna kaca pembesar),
+   cuplikan jawaban satu baris saat tertutup, garis pemisah tipis, dan item terbuka berwarna biru JNET. */
+.faq__panel {
+    display: grid; gap: clamp(24px, 4vw, 64px);
+    padding: clamp(24px, 4vw, 56px); border-radius: 28px;
+    background: var(--warna-permukaan);
+    box-shadow: 0 1px 2px rgba(2, 29, 58, .05), 0 22px 44px -30px rgba(2, 29, 58, .3);
+}
+@media (min-width: 960px) {
+    .faq__panel { grid-template-columns: minmax(0, .85fr) minmax(0, 1.6fr); align-items: start; }
+    .faq__samping { position: sticky; top: calc(var(--tinggi-kepala) + 24px); }
+}
+.faq__judul { font-size: clamp(1.5rem, 1.6vw + 1rem, 2.125rem); font-weight: 800; line-height: 1.15; }
+.faq__lead { margin-top: 12px; max-width: 36ch; color: var(--warna-teks-redup); }
+.faq__tombol { margin-top: 22px; gap: 8px; border-radius: 999px; }
+
+.faq__daftar { border-top: 1px solid var(--warna-garis); }
+.faq__item { border-bottom: 1px solid var(--warna-garis); }
+.faq__pemicu {
+    display: flex; align-items: flex-start; gap: 14px; padding: 18px 4px;
+    list-style: none; cursor: pointer; border-radius: 12px;
+}
+.faq__pemicu::-webkit-details-marker { display: none; } /* Safari lama */
+.faq__penanda {
+    display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--warna-info-latar); color: var(--warna-aksi);
+    transition: background-color .2s ease, color .2s ease;
+}
+/* Panah dari garis (mengikuti warna teks): tertutup menunjuk ke kanan, terbuka menunjuk ke bawah */
+.faq__penanda::before {
+    content: ""; width: 8px; height: 8px; margin-left: -3px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: -45deg;
+}
+.faq__item[open] .faq__penanda { background: var(--warna-aksi); color: #fff; }
+.faq__item[open] .faq__penanda::before { margin: -4px 0 0; rotate: 45deg; }
+.faq__teks { display: grid; gap: 4px; min-width: 0; padding-top: 4px; }
+.faq__pertanyaan { font-size: 1.0625rem; font-weight: 700; line-height: 1.4; color: var(--warna-gelap); transition: color .2s ease; }
+.faq__pemicu:hover .faq__pertanyaan,
+.faq__item[open] .faq__pertanyaan { color: var(--warna-aksi); }
+.faq__cuplikan { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--warna-teks-redup); }
+.faq__item[open] .faq__cuplikan { display: none; }
+.faq__jawab { margin: 0; padding: 0 4px 20px 50px; }
+/* Buka-tutup halus: tinggi isi berpindah ke ukuran alaminya (browser lain langsung terbuka/tertutup) */
+.faq__item::details-content { interpolate-size: allow-keywords; overflow: clip; contain: layout; }
+.faq__item:not([open])::details-content { block-size: 0; }
+@media (prefers-reduced-motion: no-preference) {
+    .faq__penanda::before { transition: rotate .25s ease, margin .25s ease; }
+    .faq__item::details-content {
+        transition: block-size, content-visibility, display;
+        transition-duration: .3s; transition-timing-function: ease-in-out; transition-behavior: allow-discrete;
+    }
+}
+/* Muncul saat digulir (revisi mitra, seperti kartu Pilihan paket): judul, penjelasan, tombol, dan setiap
+   pertanyaan naik sambil menjadi jelas ketika masuk dari tepi bawah layar, mengikuti gerakan gulir.
+   Animasi gulir bawaan CSS (tanpa JavaScript) yang hanya mengubah translate dan opacity, jadi ringan.
+   Browser yang belum mendukung, atau pengunjung yang memilih "kurangi animasi", langsung melihat
+   semuanya tanpa animasi. Rentangnya dihitung sejak elemen masuk dari bawah (entry), sehingga kolom
+   kiri yang menempel (sticky) di desktop tidak mengubah waktunya. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+        @keyframes faq-muncul {
+            from { opacity: 0; translate: 0 32px; }
+        }
+        .faq__samping > *,
+        .faq__item {
+            animation: faq-muncul auto cubic-bezier(.2, .8, .2, 1) backwards;
+            animation-timeline: view();
+            animation-range: entry 0% entry 30vh;
+        }
+        /* Yang sedang difokus keyboard selalu tampil utuh, juga bila baru setengah masuk layar */
+        .faq__samping > :focus-visible,
+        .faq__item:has(:focus-visible) { animation: none; }
+    }
+}
+@media (max-width: 559px) {
+    .faq__pemicu { gap: 12px; padding-block: 16px; }
+    .faq__jawab { padding-left: 48px; }
+}
+
+/* ---------- Paket ---------- */
+/* Kolom dari uk-grid (uk-grid-match menyamakan tinggi kartu) */
+.daftar-paket { padding-top: 12px; }
+.daftar-paket__jangkar > .kartu-paket { flex: 1; }
+
+/* Kartu paket (Revisi UI): label, kecepatan, harga, tombol, lalu keunggulan */
+.kartu-paket {
+    position: relative; display: flex; flex-direction: column;
+    padding: 28px 22px 22px; background: var(--warna-permukaan); color: var(--warna-teks);
+    border: 1px solid var(--warna-garis); border-radius: 22px;
+    box-shadow: 0 1px 2px rgba(2, 29, 58, .06);
+}
+.kartu-paket__label {
+    position: absolute; top: -13px; left: 20px; margin: 0; padding: 4px 12px;
+    border-radius: 999px; background: var(--warna-cta); color: #fff;
+    font-size: .8125rem; font-weight: 800; letter-spacing: .01em; line-height: 1.4;
+    box-shadow: 0 6px 14px rgba(196, 67, 0, .28);
+}
+.kartu-paket__nama { font-size: 1.0625rem; font-weight: 800; color: var(--jnet-biru); }
+.kartu-paket__kecepatan { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; color: var(--warna-gelap); }
+.kartu-paket__kecepatan .angka-kecepatan { font-size: var(--ukuran-kecepatan); line-height: 1; }
+.kartu-paket__satuan { font-weight: 800; font-size: 1.125rem; }
+.kartu-paket__harga {
+    margin-top: 14px; font-size: 1.5rem; font-weight: 800; line-height: 1.2;
+    color: var(--jnet-biru); font-variant-numeric: tabular-nums;
+}
+.kartu-paket__periode { margin-left: 2px; font-size: 1rem; font-weight: 600; color: var(--warna-teks-redup); }
+.kartu-paket__catatan { margin-top: 4px; font-size: var(--ukuran-kecil); color: var(--warna-teks-redup); }
+.kartu-paket__aksi { width: 100%; margin-top: 18px; }
+/* Revisi mitra: tombol kartu paket memakai biru JNET polos. Gradasi navy ke biru
+   sebelumnya terlalu kontras (ujung kiri hampir hitam) dan warnanya bocor di tepi tombol. */
+.kartu-paket__aksi.uk-button-secondary {
+    background: var(--jnet-biru); border-color: var(--jnet-biru);
+    box-shadow: 0 6px 14px rgba(0, 51, 153, .22);
+}
+.kartu-paket__aksi.uk-button-secondary:hover { background: var(--warna-aksi-hover); border-color: var(--warna-aksi-hover); color: #fff; box-shadow: 0 8px 18px rgba(0, 51, 153, .3); }
+.kartu-paket__keunggulan {
+    display: grid; gap: 10px; margin: 18px 0 0; padding: 14px;
+    list-style: none; border-radius: 14px; background: var(--warna-latar-alt);
+}
+.kartu-paket__keunggulan li { display: flex; align-items: flex-start; gap: 10px; }
+.kartu-paket__centang { flex: none; width: 22px; height: 22px; color: var(--jnet-biru-serat); }
+.kartu-paket__keunggulan strong { display: block; font-size: .9375rem; line-height: 1.35; color: var(--warna-gelap); }
+.kartu-paket__keterangan { display: block; font-size: var(--ukuran-kecil); line-height: 1.4; color: var(--warna-teks-redup); }
+
+.catatan-harga { margin-top: 20px; font-size: var(--ukuran-kecil); color: var(--warna-teks-redup); max-width: 70ch; }
+
+.info-pemasangan {
+    margin-top: 32px; padding: 24px; border-radius: var(--radius-besar);
+    background: var(--warna-permukaan); border: 1px solid var(--warna-garis);
+    border-left: 6px solid var(--jnet-oranye);
+}
+.info-pemasangan h2,
+.info-pemasangan h3 { font-size: var(--ukuran-h3); margin-bottom: 8px; }
+
+.panduan-singkat { margin-top: 48px; max-width: 70ch; }
+.panduan-singkat h2 { font-size: 1.25rem; margin-bottom: 12px; }
+.panduan-singkat ul { margin: 0; padding-left: 1.25rem; }
+.panduan-singkat li + li { margin-top: 6px; }
+
+/* ---------- Langkah alur (urutan nyata, maka bernomor) ---------- */
+/* Kolom langkah dari uk-grid (lihat komponen langkah-alur) */
+.langkah__item { display: flex; gap: 16px; align-items: flex-start; }
+.langkah__nomor {
+    flex: none; display: grid; place-items: center; width: 48px; height: 48px;
+    background: var(--warna-gelap); color: #fff; border-radius: var(--radius);
+    font-style: italic; font-weight: 800; font-size: 1.375rem;
+}
+.langkah__judul { margin-top: 10px; font-size: var(--ukuran-h3); font-weight: 700; }
+.langkah__teks { margin-top: 6px; color: var(--warna-teks-redup); }
+.langkah--ringkas .langkah__item { flex-direction: column; gap: 12px; }
+.langkah--ringkas .langkah__judul { margin-top: 0; font-size: 1rem; }
+
+/* ---------- Jangkauan ---------- */
+.jangkauan__penjelasan h2 { margin-bottom: 16px; }
+.jangkauan__penjelasan p { max-width: 60ch; }
+.jangkauan__aksi { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.jangkauan__keterangan { color: var(--warna-teks-redup); margin-bottom: 20px; }
+.wilayah + .wilayah { margin-top: 28px; }
+.wilayah__judul { display: flex; align-items: baseline; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--warna-gelap); }
+.wilayah__judul span { font-size: var(--ukuran-kecil); font-weight: 600; color: var(--warna-teks-redup); }
+.wilayah__daftar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 20px; margin: 0; padding: 0; list-style: none; }
+.wilayah__daftar li { padding: 9px 0; border-bottom: 1px solid var(--warna-garis); }
+
+/* ---------- Profil dan kontak ---------- */
+/* Jangkauan, Profil, Kontak, dan Kemitraan: dua kolom dari uk-grid (bertumpuk di bawah 960px) */
+.profil__logo { width: 220px; margin-bottom: 28px; }
+.profil__deskripsi p { max-width: 65ch; }
+.info-kontak { padding: 28px; border: 1px solid var(--warna-garis); border-radius: var(--radius-besar); }
+.info-kontak__judul { font-size: 1.25rem; margin-bottom: 16px; }
+.info-kontak__daftar { margin: 0; }
+.info-kontak__daftar div { padding: 12px 0; border-top: 1px solid var(--warna-garis); }
+.info-kontak__daftar dt { font-size: var(--ukuran-kecil); color: var(--warna-teks-redup); font-weight: 600; }
+.info-kontak__daftar dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.kontak__ajakan h2 { margin-bottom: 12px; }
+.kontak__ajakan p { margin-bottom: 24px; max-width: 55ch; }
+.kontak__ajakan .kontak__mitra { margin: 28px 0 0; padding-top: 20px; border-top: 1px solid var(--warna-garis); color: var(--warna-teks-redup); }
+
+/* ---------- Kemitraan bisnis (B2B) ---------- */
+.kemitraan__isi h2 { margin-bottom: 12px; }
+.kemitraan__isi > p { max-width: 62ch; }
+.kemitraan__isi h3 { margin: 32px 0 14px; font-size: var(--ukuran-h3); }
+.kemitraan__info { margin-top: 28px; padding: 20px 24px; border: 1px solid var(--warna-garis); border-left: 6px solid var(--jnet-oranye); border-radius: var(--radius-besar); }
+.kemitraan__info h3 { margin: 0 0 8px; }
+.kemitraan__langkah { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: mitra; }
+.kemitraan__langkah li { counter-increment: mitra; display: flex; align-items: center; gap: 14px; max-width: 60ch; }
+.kemitraan__langkah li::before {
+    content: counter(mitra); flex: none; display: grid; place-items: center; width: 36px; height: 36px;
+    border-radius: var(--radius-kecil); background: var(--warna-gelap); color: #fff; font-style: italic; font-weight: 800;
+}
+.kemitraan__catatan { margin-top: 32px; color: var(--warna-teks-redup); }
+.kemitraan__nama { margin-bottom: 18px; font-size: 1.125rem; font-weight: 800; color: var(--warna-gelap); }
+.kemitraan__nama span { display: block; font-size: var(--ukuran-kecil); font-weight: 600; color: var(--warna-teks-redup); }
+.kemitraan__aksi { display: grid; gap: 10px; margin-bottom: 12px; }
+
+/* ---------- Ajakan penutup ---------- */
+.ajakan { background: var(--warna-gelap); color: var(--warna-teks-redup-di-gelap); }
+.ajakan :focus-visible { outline-color: #fff; }
+.ajakan__isi { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding-block: 48px; }
+.ajakan__judul { color: #fff; margin-bottom: 6px; }
+
+/* ---------- Kaki (footer) ---------- */
+.kaki { background: #011329; color: var(--warna-teks-redup-di-gelap); font-size: var(--ukuran-kecil); }
+.kaki a { color: #fff; }
+.kaki :focus-visible { outline-color: #fff; }
+.kaki__isi { padding-block: 48px; }
+.kaki__nama { color: #fff; font-weight: 700; font-size: 1rem; }
+.kaki__logo-teks { font-style: italic; font-weight: 800; letter-spacing: -0.02em; margin-right: 6px; }
+.kaki__teks { margin-top: 8px; font-style: normal; max-width: 40ch; }
+.kaki__menu ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.kaki__menu a { text-decoration: none; }
+.kaki__menu a:hover { text-decoration: underline; color: #fff; }
+.kaki__kontak p + p { margin-top: 8px; }
+.kaki__bawah { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding-block: 16px; border-top: 1px solid rgba(255, 255, 255, .12); }
+
+/* ---------- Responsif ---------- */
+@media (max-width: 767px) {
+    .hero__isi { grid-template-columns: 1fr; }
+    .tangga__batang { height: 56px; }
+    .akses-cepat__daftar { grid-template-columns: repeat(2, 1fr); }
+    .akses-cepat__daftar a,
+    .akses-cepat__daftar li:first-child a { border-left: 0; padding-left: 0; }
+    .wilayah__daftar { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 559px) {
+    .kartu-paket { padding-inline: 18px; }
+    .langkah--ringkas .langkah__item { flex-direction: row; align-items: center; }
+    .hero__aksi .uk-button { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- Halaman error (Tahap 6) ---------- */
+.halaman-error { min-height: 100vh; display: grid; place-items: center; background: var(--warna-latar-alt); padding: 24px var(--gutter); }
+.halaman-error__isi { width: 100%; max-width: 560px; padding: clamp(28px, 5vw, 48px); background: var(--warna-permukaan); border: 1px solid var(--warna-garis); border-radius: var(--radius); border-top: 4px solid var(--jnet-oranye); }
+.halaman-error__logo { display: inline-block; margin-bottom: 28px; }
+.halaman-error__logo img { display: block; height: 44px; width: auto; }
+.halaman-error__kode { margin: 0 0 4px; font-style: italic; font-weight: 800; font-size: 3rem; line-height: 1; color: var(--jnet-biru); letter-spacing: -0.03em; }
+.halaman-error__judul { font-size: var(--ukuran-h2); margin-bottom: 12px; }
+.halaman-error__pesan { margin: 0 0 24px; color: var(--warna-teks-redup); max-width: 60ch; }
+.halaman-error__aksi { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Atribut hidden selalu menang atas display dari kelas (misalnya .tombol, .field). */
+[hidden] { display: none !important; }
+.jangkauan__penjelasan p + h2 { margin-top: 28px; }
+
+/* ========================================================================
+   Revisi UI beranda: banner foto geser, ubin aksi cepat, etalase paket.
+   Pola tata letak terinspirasi referensi, identitas visual tetap JNET.
+   ======================================================================== */
+.ikon { display: block; flex: none; }
+
+.tombol__ikon { width: 18px; height: 18px; }
+
+/* Latar gelap bersama untuk banner dan ubin aksi cepat */
+.sorotan { background: var(--warna-gelap); color: var(--warna-teks-di-gelap); }
+.sorotan :focus-visible { outline-color: #fff; }
+
+/* ---------- Banner foto geser ---------- */
+.banner { position: relative; }
+.banner__bingkai { position: relative; max-width: 1920px; margin-inline: auto; }
+.banner__trek,
+.etalase__trek {
+    position: relative; display: flex; margin: 0; padding: 0; list-style: none;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+}
+.js .banner__trek,
+.js .etalase__trek { scrollbar-width: none; }
+.js .banner__trek::-webkit-scrollbar,
+.js .etalase__trek::-webkit-scrollbar { display: none; }
+.banner__slide { position: relative; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+/* Foto berisi tulisan: selebar layar (kiri-kanan penuh), tinggi mengikuti
+   perbandingan foto, tidak pernah dipotong. */
+.banner__foto { position: relative; }
+.banner__slide picture { display: block; }
+.banner__slide img { display: block; width: 100%; height: auto; aspect-ratio: var(--rasio, attr(width type(<number>)) / attr(height type(<number>))); }
+/* Versi HP (tegak 4:5: foto di atas, tulisan di bawah) memakai rasionya sendiri */
+@media (max-width: 767px) {
+    .banner__slide img { aspect-ratio: var(--rasio-hp, var(--rasio, auto)); }
+}
+.banner__tombol {
+    position: absolute; bottom: clamp(24px, 13%, 110px); gap: 10px;
+    min-width: 176px; box-shadow: 0 12px 28px rgba(0, 0, 0, .3);
+}
+.banner__tombol--kiri { left: clamp(16px, 6%, 120px); }
+.banner__tombol--kanan { right: clamp(16px, 6%, 120px); }
+.banner__tombol--tengah { left: 50%; transform: translateX(-50%); }
+.banner__tombol-ikon { width: 18px; height: 18px; }
+
+/* Titik geser: di HP di bawah foto; dari tablet ke atas di pojok kanan bawah foto */
+.banner__kendali { display: none; align-items: center; justify-content: center; padding-top: 12px; }
+.js .banner__kendali { display: flex; }
+.js .banner__kendali[hidden] { display: none; }
+@media (min-width: 768px) {
+    .banner__kendali {
+        position: absolute; z-index: 2; right: clamp(16px, 3vw, 48px); bottom: clamp(12px, 2.5vw, 28px);
+        padding: 4px 8px; border-radius: 999px;
+        background: rgba(2, 29, 58, .45); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    }
+}
+/* Panah di sisi kiri dan kanan, di tengah tinggi foto */
+.banner__panah {
+    position: absolute; top: 50%; z-index: 2; transform: translateY(-50%);
+    background: rgba(2, 29, 58, .55); backdrop-filter: blur(4px);
+}
+.banner__panah--sebelum { left: clamp(8px, 1.5vw, 24px); }
+.banner__panah--berikut { right: clamp(8px, 1.5vw, 24px); }
+.banner__panah {
+    display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+    border: 1px solid rgba(255, 255, 255, .35); border-radius: 50%;
+    background: rgba(255, 255, 255, .08); color: #fff; cursor: pointer;
+}
+.banner__panah:hover { background: rgba(2, 29, 58, .8); border-color: #fff; }
+
+/* Jarak 8px antar-tombol titik agar tidak salah ketuk (saran tinjauan skill UI/UX Pro Max) */
+.banner__titik,
+.etalase__titik { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.titik { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; }
+.titik::before {
+    content: ""; width: 8px; height: 8px; border-radius: 999px;
+    background: rgba(255, 255, 255, .5); transition: width .2s ease, background-color .2s ease;
+}
+.titik[aria-current="true"]::before { width: 22px; background: var(--jnet-oranye); }
+.titik:hover::before { background: #fff; }
+.titik[aria-current="true"]:hover::before { background: var(--jnet-oranye); }
+
+/* Banner dapat diseret dengan kursor mouse (data-geser-seret, geser.js); jari sudah bisa secara bawaan.
+   Selama diseret, scroll-snap dimatikan agar trek mengikuti kursor tanpa tersentak. */
+@media (hover: hover) and (pointer: fine) {
+    [data-geser-seret] .banner__trek { cursor: grab; }
+}
+.banner__trek.sedang-diseret { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; user-select: none; }
+
+/* ---------- Ubin aksi cepat ----------
+   Revisi Vue: ikon kaca berlapis (components/ikon-layanan) dan umpan balik saat ditekan. Pulau Vue
+   (resources/js/Components/AksiCepat.vue) memberi kelas aksi-cepat__item--ditekan selama ubin ditekan
+   dan riak cahaya dari titik sentuh; tanpa JavaScript, :active memberi efek tekan yang sama (tanpa riak).
+   Gerak hanya memakai translate, scale, rotate, dan opacity (dikerjakan GPU) dan hanya berjalan bila
+   "kurangi animasi" tidak aktif; warna latar dan garis tepi tetap berubah sebagai penanda. */
+.aksi-cepat { padding-block: 20px clamp(32px, 4vw, 48px); }
+/* Bingkai kaca; ubin di dalamnya disusun uk-grid (4 kolom, 2 kolom di bawah 960px) */
+.aksi-cepat__bingkai {
+    padding: 12px; border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .03));
+    border: 1px solid rgba(255, 255, 255, .12);
+}
+.aksi-cepat__item {
+    position: relative; isolation: isolate; overflow: hidden;
+    display: flex; align-items: center; gap: 14px; height: 100%; padding: 16px;
+    border: 1px solid rgba(255, 255, 255, .14); border-radius: 16px;
+    color: #fff; text-decoration: none;
+    /* Umpan balik tekan dibuat sendiri: kotak abu-abu bawaan browser HP dimatikan, ketukan tanpa jeda zoom */
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    /* Transformasi identitas sejak awal agar konteks tumpukan tidak berubah saat disorot atau ditekan */
+    translate: 0 0; scale: 1;
+    transition: background-color .2s ease, border-color .2s ease;
+}
+.aksi-cepat__item:hover { color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+    .aksi-cepat__item:hover { background: rgba(255, 255, 255, .08); border-color: rgba(63, 205, 248, .55); }
+}
+.aksi-cepat__item:active,
+.aksi-cepat__item--ditekan { background: rgba(255, 255, 255, .12); border-color: rgba(63, 205, 248, .75); }
+
+.aksi-cepat__ikon { position: relative; display: grid; place-items: center; flex: none; width: 56px; height: 56px; scale: 1; }
+/* Cahaya biru lembut di balik ikon, makin terang saat ubin disorot */
+.aksi-cepat__ikon::before {
+    content: ""; position: absolute; inset: -4px; z-index: -1; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(63, 205, 248, .3), rgba(63, 205, 248, 0));
+    opacity: .7; transition: opacity .25s ease;
+}
+.ikon-layanan { display: block; width: 50px; height: 50px; overflow: visible; }
+.ikon-layanan__titik { fill: #0A5FC0; stroke: none; }
+.ikon-layanan__belakang,
+.ikon-layanan__aksen { transform-box: fill-box; transform-origin: center; translate: 0 0; rotate: 0deg; }
+.aksi-cepat__teks { display: grid; gap: 2px; min-width: 0; }
+.aksi-cepat__teks strong { font-size: 1rem; line-height: 1.3; }
+.aksi-cepat__teks span { font-size: var(--ukuran-kecil); line-height: 1.4; color: var(--warna-teks-redup-di-gelap); }
+
+/* Riak cahaya dari titik sentuh; elemennya dibuat AksiCepat.vue lalu dihapus setelah animasinya selesai */
+.aksi-cepat__riak {
+    position: absolute; z-index: -1; border-radius: 50%; pointer-events: none;
+    translate: -50% -50%; scale: 0; opacity: 0;
+    background: radial-gradient(closest-side, rgba(160, 228, 255, .42), rgba(63, 205, 248, .16) 65%, rgba(63, 205, 248, 0));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* Kembali ke keadaan semula dengan pegas: sedikit melewati lalu mantap. linear() ditulis langsung
+       setelah cadangan cubic-bezier untuk browser yang belum mendukungnya. */
+    .aksi-cepat__item {
+        transition: background-color .2s ease, border-color .2s ease,
+            translate .5s cubic-bezier(.34, 1.56, .64, 1), scale .5s cubic-bezier(.34, 1.56, .64, 1);
+        transition-timing-function: ease, ease,
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1),
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+    }
+    .aksi-cepat__ikon {
+        transition: scale .5s cubic-bezier(.34, 1.56, .64, 1);
+        transition-timing-function: linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+    }
+    .ikon-layanan__belakang,
+    .ikon-layanan__aksen {
+        transition: translate .5s cubic-bezier(.34, 1.56, .64, 1), rotate .5s cubic-bezier(.34, 1.56, .64, 1);
+        transition-timing-function:
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1),
+            linear(0, .104 5%, .34 10%, .611 15%, .85 20%, 1.024 25%, 1.125 30%, 1.162 35%, 1.153 40%, 1.118 45%, 1.075 50%, 1.002 60%, .974 70%, .979 80%, .993 90%, 1);
+    }
+
+    /* Disorot (hanya mouse): ubin terangkat, lapisan biru bergeser dan miring di balik kaca, titik aksen melayang */
+    @media (hover: hover) and (pointer: fine) {
+        .aksi-cepat__item:hover { translate: 0 -3px; }
+        .aksi-cepat__item:hover .aksi-cepat__ikon::before { opacity: 1; }
+        .aksi-cepat__item:hover .ikon-layanan__belakang { translate: 2px -2px; rotate: 8deg; }
+        .aksi-cepat__item:hover .ikon-layanan__aksen { translate: 1px -3px; }
+    }
+
+    /* Ditekan: ubin turun dan mengecil dengan cepat, ikon tertekan lebih dalam; saat dilepas memantul kembali */
+    .aksi-cepat__item:active,
+    .aksi-cepat__item--ditekan {
+        translate: 0 0; scale: .97;
+        transition-duration: .2s, .2s, .09s, .09s;
+        transition-timing-function: ease, ease, ease-out, ease-out;
+    }
+    .aksi-cepat__item:active .aksi-cepat__ikon,
+    .aksi-cepat__item--ditekan .aksi-cepat__ikon { scale: .88; transition-duration: .09s; transition-timing-function: ease-out; }
+
+    .aksi-cepat__riak { animation: aksi-cepat-riak .6s cubic-bezier(.22, .7, .3, 1) forwards; }
+}
+@keyframes aksi-cepat-riak {
+    from { scale: 0; opacity: 1; }
+    to { scale: 1; opacity: 0; }
+}
+
+/* ---------- Etalase paket ----------
+   Revisi mitra (seperti IndiHome): kotak "Pilihan paket" bergradasi dari putih di atas, sehingga
+   menyatu dengan latar halaman, ke biru muda JNET di bawah (dengan cahaya oranye dan biru tipis
+   di sudut bawah). Judul di tengah, seperti judul bagian yang berdiri di atas kotak. */
+.etalase { padding-block: clamp(36px, 5vw, 64px) clamp(48px, 6vw, 80px); }
+.etalase__panel {
+    /* --tepi: padding samping; panah diletakkan di dalam area ini agar tidak menutupi kartu */
+    --tepi: clamp(16px, 4.5vw, 64px);
+    position: relative; isolation: isolate; overflow: hidden;
+    padding: clamp(4px, 1vw, 12px) var(--tepi) clamp(28px, 3vw, 40px);
+    border-radius: 28px; color: var(--warna-teks);
+    background:
+        radial-gradient(70% 55% at 100% 100%, rgba(255, 101, 1, .10), transparent 70%),
+        radial-gradient(60% 50% at 0% 100%, rgba(0, 119, 197, .12), transparent 70%),
+        linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 12%, #F4F8FE 42%, #E4EDFA 100%);
+}
+/* Pola titik halus dan lengkung dekoratif di kanan bawah, mengingatkan pada gelombang sinyal */
+.etalase__panel::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; opacity: .9;
+    background-image: radial-gradient(rgba(0, 51, 153, .11) 1.2px, transparent 1.7px);
+    background-size: 14px 14px;
+    -webkit-mask-image: linear-gradient(150deg, transparent 45%, #000 80%, transparent 100%);
+    mask-image: linear-gradient(150deg, transparent 45%, #000 80%, transparent 100%);
+}
+.etalase__panel::after {
+    content: ""; position: absolute; z-index: -1; right: -20%; bottom: -62%;
+    width: 70%; aspect-ratio: 1; border-radius: 50%;
+    border: 2px solid rgba(0, 51, 153, .07); box-shadow: 0 0 0 28px rgba(0, 51, 153, .025);
+}
+.etalase__kepala { margin-bottom: 8px; text-align: center; }
+.etalase__judul { color: var(--warna-gelap); }
+.etalase__kosong {
+    padding: 24px; border: 1px dashed var(--warna-garis); border-radius: 16px;
+    background: #fff; color: var(--warna-teks-redup); text-align: center;
+}
+.etalase__geser { position: relative; }
+.etalase__trek { gap: 20px; padding: 18px 4px 12px; scroll-padding-inline: 4px; }
+.etalase__item { display: flex; flex: 0 0 calc((100% - 40px) / 3); scroll-snap-align: start; }
+/* Kartu putih di atas latar terang: garis tipis dan bayangan lembut yang jatuh ke bawah. Bayangan
+   sengaja tidak melebar ke samping (spread negatif), karena area geser memotong apa pun yang keluar
+   dari tepinya dan potongan itu terlihat sebagai garis di latar terang. */
+.etalase__item > .kartu-paket {
+    flex: 1; border-color: rgba(2, 29, 58, .08);
+    box-shadow: 0 12px 18px -14px rgba(2, 29, 58, .30), 0 1px 3px rgba(2, 29, 58, .06);
+}
+.etalase__panah {
+    position: absolute; top: 50%; z-index: 2; transform: translateY(-50%);
+    display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
+    border: 1px solid var(--warna-garis); border-radius: 50%; background: #fff; color: var(--warna-gelap);
+    box-shadow: 0 6px 16px rgba(2, 29, 58, .14); cursor: pointer;
+}
+.etalase__panah:hover { background: var(--warna-latar-alt); }
+.etalase__panah:disabled { opacity: 0; pointer-events: none; }
+.etalase__panah--sebelum { left: calc(var(--tepi) / -2 - 24px); }
+.etalase__panah--berikut { right: calc(var(--tepi) / -2 - 24px); }
+@media (min-width: 768px) {
+    .etalase__panel { --tepi: clamp(56px, 6vw, 80px); }
+}
+.etalase__titik { margin-top: 8px; }
+/* Titik geser di latar terang: abu-abu navy, yang aktif tetap oranye */
+.etalase__titik .titik:not([aria-current="true"])::before { background: rgba(2, 29, 58, .22); }
+.etalase__titik .titik:not([aria-current="true"]):hover::before { background: rgba(2, 29, 58, .45); }
+.etalase__bawah { display: flex; justify-content: center; margin-top: 20px; }
+.etalase__semua { border-radius: 999px; background: #fff; }
+
+@media (max-width: 1023px) {
+    .etalase__item { flex-basis: calc((100% - 20px) / 2); }
+}
+
+@media (max-width: 767px) {
+    /* Di HP tombol diletakkan di bawah foto agar tidak menutupi tulisan di foto */
+    .banner__tombol,
+    .banner__tombol--tengah {
+        position: static; transform: none; display: flex;
+        width: calc(100% - 2 * var(--gutter)); margin: 14px var(--gutter) 0; box-shadow: none;
+    }
+    .etalase__panah,
+    .banner__panah { display: none !important; }
+
+    /* Revisi mitra (seperti IndiHome): versi HP tegak menyisakan ruang kosong di bagian bawah
+       foto, sehingga tombol Langganan (kiri bawah) dan titik geser (kanan bawah) diletakkan di
+       atas foto. Foto tampil penuh mulai dari belakang navbar. */
+    .banner--tegak .banner__tombol,
+    .banner--tegak .banner__tombol--tengah {
+        position: absolute; left: var(--gutter); right: auto; bottom: 4.5%; transform: none;
+        width: auto; min-width: 0; min-height: 44px; margin: 0; padding: 10px 20px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    }
+    .js .banner--tegak .banner__kendali {
+        position: absolute; z-index: 2; right: var(--gutter); bottom: calc(4.5% + 10px);
+        padding: 0 6px; border-radius: 999px;
+        background: rgba(2, 29, 58, .45); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    }
+    /* Di samping tombol Langganan ruangnya sempit: tombol titik selebar 16px dengan jarak 8px
+       (jarak pusat ke pusat 24px, memenuhi pengecualian jarak WCAG 2.5.8 untuk target kecil). */
+    .banner--tegak .titik { min-width: 16px; }
+    .banner--tegak .titik[aria-current="true"]::before { width: 16px; }
+
+    /* Revisi mitra: ubin aksi cepat tidak ditampilkan di HP; banner langsung disusul pilihan paket. */
+    .aksi-cepat { display: none; }
+}
+/* HP sangat kecil (≤ 359px): tombol Langganan diperkecil agar tidak bertumpuk dengan titik geser */
+@media (max-width: 359px) {
+    .banner--tegak .banner__tombol,
+    .banner--tegak .banner__tombol--tengah { padding-inline: 14px; font-size: .9375rem; }
+}
+
+@media (max-width: 559px) {
+    .aksi-cepat__bingkai { padding: 8px; }
+    .aksi-cepat__item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 12px; }
+    .aksi-cepat__teks span { display: none; }
+    .etalase__item { flex-basis: 86%; }
+    .etalase__trek { gap: 14px; }
+}
+
+/* ---------- Kartu paket 3D (beranda dan halaman Paket) ----------
+   Kelas kartu-3d dipasang app.js pada pembungkus kartu. Efek hanya memakai transform
+   dan opacity, sehingga dikerjakan GPU perangkat pengunjung dan tidak membebani server.
+   Tanpa JavaScript atau saat "kurangi animasi" aktif, kartu tampil datar seperti biasa;
+   efek miring hanya untuk mouse, di layar sentuh kartu cukup muncul dengan halus. */
+.kartu-3d-wadah { perspective: 1400px; }
+.kartu-3d {
+    perspective: 1100px;
+    transform-origin: 50% 100%;
+    transition: opacity .6s ease, transform .8s cubic-bezier(.2, .8, .2, 1);
+    transition-delay: calc(var(--urutan, 0) * 90ms);
+}
+/* Sebelum terlihat: rebah ke belakang dan sedikit di bawah. Saat digulir ke layar,
+   kartu berdiri dan naik ke tempatnya satu per satu. */
+.kartu-3d--tunggu { opacity: 0; transform: translateY(40px) rotateX(18deg); }
+
+.kartu-3d > .kartu-paket {
+    transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .4s ease;
+}
+/* Kilau lembut yang mengikuti posisi kursor */
+.kartu-3d > .kartu-paket::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: radial-gradient(circle at var(--kilau-x, 50%) var(--kilau-y, 0%), rgba(0, 119, 197, .14), transparent 60%);
+    opacity: 0; transition: opacity .4s ease;
+}
+.kartu-3d > .kartu-paket--miring {
+    transform: translateY(-6px) rotateX(var(--putar-x, 0deg)) rotateY(var(--putar-y, 0deg));
+    transition-duration: .2s, .4s; /* mengikuti kursor dengan cepat, kembali datar lebih pelan */
+    box-shadow: 0 26px 50px rgba(2, 29, 58, .18);
+    will-change: transform;
+}
+.kartu-3d > .kartu-paket--miring::before { opacity: 1; }
+/* Di etalase, bayangan dibuat rapat (spread negatif) agar tidak terpotong tepi area geser */
+.etalase__item.kartu-3d > .kartu-paket--miring {
+    box-shadow: 0 22px 26px -20px rgba(2, 29, 58, .34), 0 8px 14px -10px rgba(2, 29, 58, .16);
+}
+/* Fokus keyboard: kartu ikut terangkat tanpa miring */
+.kartu-3d > .kartu-paket:not(.kartu-paket--miring):has(:focus-visible) { transform: translateY(-6px); }
+
+/* Isi kartu tampak timbul berlapis saat kartu dimiringkan */
+.kartu-3d .kartu-paket__label,
+.kartu-3d .kartu-paket__nama,
+.kartu-3d .kartu-paket__kecepatan,
+.kartu-3d .kartu-paket__harga,
+.kartu-3d .kartu-paket__keunggulan { transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.kartu-3d .kartu-paket__aksi {
+    transition: transform .6s cubic-bezier(.2, .8, .2, 1), background-color .15s ease, border-color .15s ease,
+        color .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.kartu-3d > .kartu-paket--miring .kartu-paket__label { transform: translateZ(44px); }
+.kartu-3d > .kartu-paket--miring .kartu-paket__nama { transform: translateZ(18px); }
+.kartu-3d > .kartu-paket--miring .kartu-paket__kecepatan { transform: translateZ(36px); }
+.kartu-3d > .kartu-paket--miring .kartu-paket__harga { transform: translateZ(26px); }
+.kartu-3d > .kartu-paket--miring .kartu-paket__aksi { transform: translateZ(30px); }
+.kartu-3d > .kartu-paket--miring .kartu-paket__keunggulan { transform: translateZ(12px); }
+
+/* Area geser etalase memotong isi yang keluar batas. Ruang tambahan di atas dan bawah
+   menjaga kartu yang terangkat dan bayangannya tetap utuh; margin negatif membuat
+   jarak tampilannya tetap sama seperti sebelumnya. */
+.etalase__trek.kartu-3d-wadah { padding-top: 36px; padding-bottom: 44px; margin-top: -18px; margin-bottom: -32px; }
+
+/* ---------- Bayar tagihan ---------- */
+.bayar > * { max-width: 760px; }
+.bayar__info { margin-top: 0; }
+.bayar .catatan-harga { margin-top: 16px; }
+
+/* Panah banner: latar gelap agar terlihat di atas foto terang maupun gelap */
+.banner .banner__panah { background: rgba(2, 29, 58, .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.banner .banner__panah:hover { background: rgba(2, 29, 58, .85); }

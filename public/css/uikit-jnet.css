@@ -1,0 +1,186 @@
+/*
+|--------------------------------------------------------------------------
+| Tema UIkit untuk JNET (revisi mitra: UI memakai UIkit agar lebih rapi)
+|--------------------------------------------------------------------------
+| UIkit 3.25.31 (public/vendor/uikit, lisensi MIT) dipakai sebagai kerangka
+| komponen: container, section, grid, card, tombol, form, alert, label,
+| tabel, dan pagination. File ini menyesuaikan tampilan bawaan UIkit dengan
+| identitas JNET (warna logo, font Plus Jakarta Sans, sudut membulat) memakai
+| token dari tema.css. Urutan: uikit.min.css -> tema.css -> file ini -> app.css.
+*/
+
+/* ---------- Dasar ---------- */
+html { font-family: var(--font-utama); color: var(--warna-teks); }
+h1, h2, h3, h4, h5, h6,
+.uk-h1, .uk-h2, .uk-h3, .uk-h4, .uk-h5, .uk-h6 { font-family: var(--font-utama); color: var(--warna-gelap); font-weight: 700; }
+em { color: inherit; }
+::selection { background: var(--warna-aksi); color: #fff; }
+
+/* UIkit menghapus garis bawah tautan; tautan di dalam teks tetap bergaris bawah agar mudah dikenali. */
+a { text-decoration: underline; text-underline-offset: 3px; }
+a:hover { text-decoration: none; }
+a:not([class]):hover { text-decoration: underline; }
+
+/* ---------- Container dan section ---------- */
+.uk-container {
+    box-sizing: border-box; max-width: var(--lebar-konten);
+    padding-left: var(--gutter); padding-right: var(--gutter);
+}
+.uk-section { padding-top: var(--jarak-bagian); padding-bottom: var(--jarak-bagian); }
+.uk-section-muted { background: var(--warna-latar-alt); }
+
+/* ---------- Tombol ---------- */
+.uk-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 12px 22px;
+    border: 2px solid transparent; border-radius: var(--radius);
+    font-family: inherit; font-size: 1rem; font-weight: 700; line-height: 1.25;
+    text-transform: none; text-decoration: none; text-align: center;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.uk-button:hover { text-decoration: none; }
+.uk-button:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 2px; }
+.uk-button-small { min-height: 40px; padding: 8px 16px; font-size: 1rem; line-height: 1.25; }
+.uk-button-large { min-height: 56px; padding: 14px 28px; font-size: 1.0625rem; }
+
+.uk-button-primary { background: var(--warna-aksi); border-color: var(--warna-aksi); color: #fff; }
+.uk-button-primary:hover,
+.uk-button-primary:focus-visible { background: var(--warna-aksi-hover); border-color: var(--warna-aksi-hover); color: #fff; }
+
+.uk-button-default { background: transparent; border-color: var(--warna-aksi); color: var(--warna-aksi); }
+.uk-button-default:hover,
+.uk-button-default:focus-visible { background: var(--warna-latar-alt); border-color: var(--warna-aksi-hover); color: var(--warna-aksi-hover); }
+
+/* Sekunder = aksen oranye JNET untuk ajakan utama (Langganan, tombol banner beranda) */
+.uk-button-secondary { background: var(--warna-cta); border-color: var(--warna-cta); border-radius: 999px; color: #fff; }
+.uk-button-secondary:hover,
+.uk-button-secondary:focus-visible { background: var(--warna-cta-hover); border-color: var(--warna-cta-hover); color: #fff; }
+
+/* Hijau = tombol kirim terakhir formulir pengajuan ("Kirim pengajuan"). Teks putih di atas #1E7A3C kontras 5,4:1. */
+.tombol--hijau { background: var(--warna-sukses); border-color: var(--warna-sukses); border-radius: 999px; color: #fff; }
+.tombol--hijau:hover,
+.tombol--hijau:focus-visible { background: #17612F; border-color: #17612F; color: #fff; }
+.tombol--hijau:disabled { background: var(--warna-sukses); border-color: var(--warna-sukses); color: #fff; }
+
+.uk-button-danger { background: var(--warna-bahaya); border-color: var(--warna-bahaya); color: #fff; }
+.uk-button-danger:hover,
+.uk-button-danger:focus-visible { background: #8F1C13; border-color: #8F1C13; color: #fff; }
+
+.uk-button-text { min-height: 0; padding: 0; border: 0; color: var(--warna-tautan); }
+
+/* Tombol yang sedang memproses (dinonaktifkan app.js) tetap berwarna, hanya meredup */
+.uk-button:disabled { opacity: .7; cursor: progress; }
+.uk-button-primary:disabled { background: var(--warna-aksi); border-color: var(--warna-aksi); color: #fff; }
+.uk-button-default:disabled { background: transparent; border-color: var(--warna-aksi); color: var(--warna-aksi); }
+.uk-button-secondary:disabled { background: var(--warna-cta); border-color: var(--warna-cta); color: #fff; }
+.uk-button-danger:disabled { background: var(--warna-bahaya); border-color: var(--warna-bahaya); color: #fff; }
+
+/* Di atas latar gelap: tombol putih (primer) dan bergaris putih (default) */
+.uk-light .uk-button-primary { background: #fff; border-color: #fff; color: var(--warna-gelap); }
+.uk-light .uk-button-primary:hover,
+.uk-light .uk-button-primary:focus-visible { background: var(--warna-latar-alt); border-color: var(--warna-latar-alt); color: var(--warna-gelap); }
+.uk-light .uk-button-default { background: transparent; border-color: rgba(255, 255, 255, .7); color: #fff; }
+.uk-light .uk-button-default:hover,
+.uk-light .uk-button-default:focus-visible { background: rgba(255, 255, 255, .12); border-color: #fff; color: #fff; }
+.uk-light .uk-button:focus-visible { outline-color: #fff; }
+
+/* ---------- Card ---------- */
+.uk-card-default {
+    background: var(--warna-permukaan); color: var(--warna-teks);
+    border: 1px solid var(--warna-garis); border-radius: var(--radius-besar);
+    box-shadow: 0 1px 2px rgba(2, 29, 58, .06);
+}
+.uk-card-default .uk-card-title { color: var(--warna-gelap); }
+.uk-card-body { padding: 24px; }
+.uk-card-small .uk-card-body { padding: 16px; }
+.uk-card-large .uk-card-body { padding: clamp(24px, 4vw, 40px); }
+.uk-card-title { font-size: 1.125rem; font-weight: 800; line-height: 1.3; }
+.uk-card-hover:not(.uk-card-default):not(.uk-card-primary):not(.uk-card-secondary):hover,
+.uk-card-default.uk-card-hover:hover { box-shadow: 0 14px 30px rgba(2, 29, 58, .12); }
+
+/* ---------- Form ---------- */
+.uk-form-label { display: block; margin-bottom: 6px; color: var(--warna-gelap); font-size: 1rem; font-weight: 700; }
+.uk-input,
+.uk-select,
+.uk-textarea {
+    height: auto; min-height: 48px; padding: 10px 14px;
+    border: 1.5px solid #9AACC2; border-radius: var(--radius);
+    background-color: #fff; color: var(--warna-teks); font: inherit;
+    transition: border-color .15s ease;
+}
+.uk-select:not([multiple]):not([size]) { padding-right: 36px; background-position: right 12px center; }
+.uk-textarea { min-height: 96px; line-height: 1.5; resize: vertical; }
+.uk-input:hover,
+.uk-select:hover,
+.uk-textarea:hover { border-color: var(--warna-teks-redup); }
+.uk-input:focus,
+.uk-select:focus,
+.uk-textarea:focus { background-color: #fff; border-color: var(--warna-fokus); color: var(--warna-teks); }
+.uk-input:focus-visible,
+.uk-select:focus-visible,
+.uk-textarea:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 1px; }
+.uk-form-danger,
+.uk-form-danger:focus { border-color: var(--warna-bahaya) !important; background-color: var(--warna-bahaya-latar) !important; color: var(--warna-teks) !important; }
+
+.uk-radio,
+.uk-checkbox { width: 20px; height: 20px; margin-top: 0; border: 1.5px solid #9AACC2; }
+.uk-radio:checked,
+.uk-checkbox:checked,
+.uk-checkbox:indeterminate { background-color: var(--warna-aksi); border-color: var(--warna-aksi); }
+.uk-radio:focus-visible,
+.uk-checkbox:focus-visible { outline: 3px solid var(--warna-fokus); outline-offset: 2px; border-color: var(--warna-aksi); }
+
+/* ---------- Alert ---------- */
+.uk-alert {
+    margin: 0 0 20px; padding: 14px 16px;
+    border-left: 5px solid; border-radius: var(--radius); font-weight: 600;
+}
+* + .uk-alert { margin-top: 0; }
+.uk-alert-primary { background: var(--warna-info-latar); color: var(--warna-info); font-weight: 500; }
+.uk-alert-success { background: var(--warna-sukses-latar); color: var(--warna-sukses); }
+.uk-alert-warning { background: var(--warna-proses-latar); color: var(--warna-proses); font-weight: 500; }
+.uk-alert-danger { background: var(--warna-bahaya-latar); color: var(--warna-bahaya); }
+
+/* ---------- Label (status) ---------- */
+.uk-label {
+    display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px;
+    background: var(--warna-netral-latar); color: var(--warna-netral);
+    font-size: var(--ukuran-kecil); font-weight: 700; line-height: 1.4; text-transform: none; white-space: nowrap;
+}
+.uk-label-success { background: var(--warna-sukses-latar); color: var(--warna-sukses); }
+.uk-label-warning { background: var(--warna-proses-latar); color: var(--warna-proses); }
+.uk-label-danger { background: var(--warna-bahaya-latar); color: var(--warna-bahaya); }
+
+/* ---------- Tabel ---------- */
+.uk-table { margin-bottom: 0; }
+* + .uk-table { margin-top: 0; }
+.uk-table th,
+.uk-table td { padding: 14px 16px; vertical-align: middle; }
+.uk-table th { color: var(--warna-teks-redup); font-size: var(--ukuran-kecil); font-weight: 700; text-transform: none; }
+.uk-table thead th { background: var(--warna-latar-alt); }
+.uk-table tbody th { color: var(--warna-gelap); font-size: 1rem; }
+.uk-table td { color: var(--warna-teks); }
+.uk-table-divider > tr:not(:first-child),
+.uk-table-divider > :not(:first-child) > tr,
+.uk-table-divider > :first-child > tr:not(:first-child) { border-top: 1px solid var(--warna-garis); }
+.uk-table-hover > tr:hover,
+.uk-table-hover tbody tr:hover { background: #F7FAFD; }
+
+/* ---------- Teks ---------- */
+.uk-text-meta { color: var(--warna-teks-redup); font-size: var(--ukuran-kecil); }
+.uk-text-muted { color: var(--warna-teks-redup) !important; }
+.uk-text-primary { color: var(--warna-aksi) !important; }
+.uk-text-success { color: var(--warna-sukses) !important; }
+.uk-text-warning { color: var(--warna-proses) !important; }
+.uk-text-danger { color: var(--warna-bahaya) !important; }
+
+/* ---------- Pagination ---------- */
+.uk-pagination { margin-left: -4px; }
+.uk-pagination > * { padding-left: 4px; }
+.uk-pagination > * > * {
+    display: inline-grid; place-items: center; min-width: 40px; min-height: 40px; padding: 6px 12px;
+    border-radius: var(--radius-kecil); color: var(--warna-teks-redup); font-weight: 700; text-decoration: none;
+}
+.uk-pagination > * > :hover { background: var(--warna-latar-alt); color: var(--warna-aksi); text-decoration: none; }
+.uk-pagination > .uk-active > * { background: var(--warna-aksi); color: #fff; }
+.uk-pagination > .uk-disabled > * { color: #9AACC2; }

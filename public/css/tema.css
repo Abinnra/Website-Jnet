@@ -1,0 +1,97 @@
+/*
+|--------------------------------------------------------------------------
+| Tema JNET – Alternatif 1
+|--------------------------------------------------------------------------
+| Semua warna, font, ukuran, dan sudut didefinisikan di sini.
+| Saat aset visual final dari tim desain tersedia, cukup ubah nilai di
+| file ini; file app.css tidak perlu diubah.
+|
+| Warna diambil langsung dari file logo JNET.
+*/
+
+/*
+| Font Plus Jakarta Sans (karya Tokotype, Indonesia), disimpan di
+| public/fonts sehingga tidak bergantung pada layanan luar.
+| Lisensi: SIL Open Font License 1.1 (public/fonts/OFL-plus-jakarta-sans.txt).
+*/
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../fonts/plus-jakarta-sans.woff2") format("woff2");
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../fonts/plus-jakarta-sans-italic.woff2") format("woff2");
+    font-weight: 200 800;
+    font-style: italic;
+    font-display: swap;
+}
+
+:root {
+    /* Warna merek (dari logo) */
+    --jnet-navy: #021D3A;          /* tulisan "JNET" */
+    --jnet-biru: #003399;          /* garis biru tua */
+    --jnet-biru-serat: #0077C5;    /* garis biru tengah */
+    --jnet-langit: #00ADEF;        /* garis biru muda, hanya dekorasi */
+    --jnet-oranye: #FF6501;        /* swoosh, hanya aksen, bukan teks */
+    --jnet-merah: #EC3237;         /* ujung swoosh */
+    --jnet-oranye-teks: #B93A00;   /* versi gelap oranye untuk teks (kontras 5,7:1) */
+    --jnet-biru-serat-teks: #006AB0; /* versi gelap biru serat untuk tautan (kontras 5,2:1 di latar alternatif) */
+
+    /* Peran warna */
+    --warna-latar: #FFFFFF;
+    --warna-latar-alt: #F0F5FB;
+    --warna-permukaan: #FFFFFF;
+    --warna-teks: #14243A;
+    --warna-teks-redup: #4B5B70;
+    --warna-garis: #D3DDE9;
+    --warna-aksi: var(--jnet-biru);
+    --warna-aksi-hover: #002A80;
+    --warna-tautan: var(--jnet-biru-serat-teks);
+    --warna-fokus: var(--jnet-biru-serat);
+    --warna-gelap: var(--jnet-navy);
+    --warna-teks-di-gelap: #FFFFFF;
+    --warna-teks-redup-di-gelap: #C3D2E6;
+    --gradien-sinyal: linear-gradient(90deg, var(--jnet-oranye), var(--jnet-merah));
+    --gradien-batang: linear-gradient(90deg, var(--jnet-biru), var(--jnet-biru-serat));
+    /* Tombol utama (Langganan, Pilih paket): oranye gelap agar teks putih kontras 5,1:1 */
+    --warna-cta: #C44300;
+    --warna-cta-hover: #A33600;
+    --gradien-label: linear-gradient(90deg, #C44300, #B42318);
+
+    /* Status (dipakai di area akun dan admin) */
+    --warna-sukses: #1E7A3C;
+    --warna-sukses-latar: #E5F4EA;
+    --warna-bahaya: #B42318;
+    --warna-bahaya-latar: #FDECEA;
+    --warna-info: #0062A3;
+    --warna-info-latar: #E3F1FB;
+    --warna-proses: #8A4B00;
+    --warna-proses-latar: #FFF1DD;
+    --warna-netral: #3D4B5C;
+    --warna-netral-latar: #EBEFF4;
+
+    /* Tipografi. Revisi mitra (font terlalu besar): skala dibuat lebih tenang dan konsisten,
+       teks 14/16px, h3 18px, h2 20–26px, h1 30–44px, angka kecepatan kartu 40–52px. */
+    --font-utama: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --ukuran-dasar: 1rem;
+    --ukuran-kecil: 0.875rem;
+    --ukuran-h1: clamp(1.875rem, 2.6vw + 1rem, 2.75rem);
+    --ukuran-h2: clamp(1.25rem, 0.7vw + 1.05rem, 1.625rem);
+    --ukuran-h3: 1.125rem;
+    --ukuran-kecepatan: clamp(2.5rem, 2.2vw + 1.6rem, 3.25rem);
+    --tinggi-baris: 1.6;
+
+    /* Bentuk dan ruang */
+    --radius-kecil: 6px;
+    --radius: 10px;
+    --radius-besar: 18px;
+    --miring: -12deg;              /* kemiringan khas tulisan logo */
+    --lebar-konten: 1160px;
+    --gutter: clamp(16px, 4vw, 32px);
+    --jarak-bagian: clamp(56px, 7vw, 96px);
+    --tinggi-kepala: 72px;
+}
